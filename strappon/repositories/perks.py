@@ -57,7 +57,6 @@ class PerksRepository(object):
                 join('perk').
                 join('user').
                 filter(EligibleDriverPerk.deleted == false()).
-                filter(EligibleDriverPerk.valid_until >= date.today()).
                 filter(DriverPerk.name == name).
                 filter(~exists().
                        where(and_(ActiveDriverPerk.perk_id ==
@@ -81,7 +80,6 @@ class PerksRepository(object):
                 join('perk').
                 join('user').
                 filter(ActiveDriverPerk.deleted == false()).
-                filter(ActiveDriverPerk.valid_until >= date.today()).
                 filter(DriverPerk.name == name).
                 order_by(ActiveDriverPerk.created.desc()).
                 group_by(User.id, ActiveDriverPerk.id))
@@ -100,7 +98,6 @@ class PerksRepository(object):
                 join('perk').
                 join('user').
                 filter(EligibleDriverPerk.deleted == false()).
-                filter(EligibleDriverPerk.valid_until >= date.today()).
                 filter(EligibleDriverPerk.user_id == user_id).
                 filter(DriverPerk.name == name).
                 filter(~exists().
