@@ -38,6 +38,7 @@ class User(Base, ReprMixin):
     updated = Column(DateTime, default=datetime.utcnow,
                      onupdate=datetime.utcnow)
 
+    drivers = relationship('Driver', uselist=True, cascade='expunge')
     active_driver = relationship('Driver', uselist=False, cascade='expunge',
                                  primaryjoin=""
                                  "and_(User.id == Driver.user_id,"
@@ -47,7 +48,11 @@ class User(Base, ReprMixin):
                      primaryjoin=""
                      "and_(User.id == Passenger.user_id,"
                      "Passenger.active == True)")
+    traces = relationship('Trace', uselist=True, cascade='expunge')
 
+    @property
+    def created_day(self):
+        return self.created.date()
 
 class Token(Base, ReprMixin):
     __tablename__ = 'token'
@@ -82,6 +87,10 @@ class Driver(Base, ReprMixin):
                      "and_(Driver.id == DriveRequest.driver_id,"
                      "DriveRequest.active == True)")
 
+    @property
+    def created_day(self):
+        return self.created.date()
+
 
 class Passenger(Base, ReprMixin):
     __tablename__ = 'passenger'
@@ -108,6 +117,11 @@ class Passenger(Base, ReprMixin):
                      primaryjoin=""
                      "and_(Passenger.id == DriveRequest.passenger_id,"
                      "DriveRequest.active == True)")
+
+    @property
+    def created_day(self):
+        return self.created.date()
+
 
 
 class DriveRequest(Base, ReprMixin):
@@ -170,6 +184,7 @@ class EligibleDriverPerk(Base, ReprMixin):
     perk_id = Column(String, ForeignKey('driver_perk.id'), nullable=True)
     valid_until = Column(DateTime, nullable=False)
 
+    user = relationship('User', uselist=False, cascade='expunge')
     perk = relationship('DriverPerk', uselist=False, cascade='expunge')
 
 
@@ -261,6 +276,10 @@ class Trace(Base, ReprMixin):
                      onupdate=datetime.utcnow)
 
     user = relationship('User', uselist=False)
+
+    @property
+    def created_day(self):
+        return self.created.date()
 
 
 class Feedback(Base, ReprMixin):
