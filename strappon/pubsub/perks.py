@@ -24,6 +24,12 @@ class EligibleDriverPerksWithNameGetter(Publisher):
                      repository.eligible_driver_perks_with_name(perk_name))
 
 
+class ActiveDriverPerksWithNameGetter(Publisher):
+    def perform(self, repository, perk_name):
+        self.publish('perks_found',
+                     repository.active_driver_perks_with_name(perk_name))
+
+
 class EligibleDriverPerkWithNameAndUserIdGetter(Publisher):
     def perform(self, perks_repository, name, user_id):
         self.publish('perks_found',

@@ -200,6 +200,7 @@ class ActiveDriverPerk(Base, ReprMixin):
     perk_id = Column(String, ForeignKey('driver_perk.id'), nullable=True)
     valid_until = Column(DateTime, nullable=False)
 
+    user = relationship('User', uselist=False, cascade='expunge')
     perk = relationship('DriverPerk', uselist=False, cascade='expunge')
 
 

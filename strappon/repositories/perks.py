@@ -74,6 +74,25 @@ class PerksRepository(object):
                 _eligible_driver_perks_with_name(name)]
 
     @staticmethod
+    def _active_driver_perks_with_name(name):
+        return (Base.session.query(ActiveDriverPerk).
+                options(joinedload_all('user')).
+                options(joinedload_all('perk')).
+                join('perk').
+                join('user').
+                filter(ActiveDriverPerk.deleted == false()).
+                filter(ActiveDriverPerk.valid_until >= date.today()).
+                filter(DriverPerk.name == name).
+                order_by(ActiveDriverPerk.created.desc()).
+                group_by(User.id, ActiveDriverPerk.id))
+
+    @staticmethod
+    def active_driver_perks_with_name(name):
+        return [expunged(p, Base.session)
+                for p in PerksRepository.
+                _active_driver_perks_with_name(name)]
+
+    @staticmethod
     def _eligible_driver_perk_with_name_and_user_id(name, user_id):
         return (Base.session.query(EligibleDriverPerk).
                 options(joinedload_all('perk')).
