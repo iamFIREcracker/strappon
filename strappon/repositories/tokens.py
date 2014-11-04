@@ -3,11 +3,10 @@
 
 import uuid
 
-from app.models import Token
+from strappon.models import Token
 
 
 class TokensRepository(object):
-
     @staticmethod
     def add(user_id):
         id = unicode(uuid.uuid4())

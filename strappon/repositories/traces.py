@@ -3,7 +3,7 @@
 
 import uuid
 
-from app.models import Trace
+from strappon.models import Trace
 
 
 class TracesRepository(object):

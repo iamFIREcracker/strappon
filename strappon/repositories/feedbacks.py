@@ -3,7 +3,7 @@
 
 import uuid
 
-from app.models import Feedback
+from strappon.models import Feedback
 
 
 class FeedbacksRepository(object):
