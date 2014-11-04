@@ -3,10 +3,10 @@
 
 import uuid
 
-from app.models import Base
-from app.models import Rate
-from app.weblib.db import func
+from weblib.db import func
 
+from strappon.models import Base
+from strappon.models import Rate
 
 
 class RatesRepository(object):

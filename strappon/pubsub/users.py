@@ -3,7 +3,7 @@
 
 from functools import partial
 
-from app.weblib.pubsub import Publisher
+from weblib.pubsub import Publisher
 
 
 class UserWithIdGetter(Publisher):

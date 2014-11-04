@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from app.weblib.pubsub import Publisher
+from weblib.pubsub import Publisher
 
 
 class UnhiddenDriversGetter(Publisher):

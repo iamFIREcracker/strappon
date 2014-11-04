@@ -4,17 +4,18 @@
 import uuid
 from datetime import datetime
 
-from app.models import Base
-from app.models import Driver
-from app.models import DriveRequest
-from app.models import Passenger
-from app.models import Rate
-from app.models import User
-from app.weblib.db import and_
-from app.weblib.db import exists
-from app.weblib.db import expunged
-from app.weblib.db import func
-from app.weblib.db import joinedload_all
+from weblib.db import and_
+from weblib.db import exists
+from weblib.db import expunged
+from weblib.db import func
+from weblib.db import joinedload_all
+
+from strappon.models import Base
+from strappon.models import Driver
+from strappon.models import DriveRequest
+from strappon.models import Passenger
+from strappon.models import Rate
+from strappon.models import User
 
 
 class DriveRequestsRepository(object):

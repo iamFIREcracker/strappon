@@ -6,19 +6,20 @@ import uuid
 from datetime import date
 from datetime import timedelta
 
-from app.models import Base
-from app.models import ActiveDriverPerk
-from app.models import ActivePassengerPerk
-from app.models import EligibleDriverPerk
-from app.models import EligiblePassengerPerk
-from app.models import DriverPerk
-from app.models import PassengerPerk
-from app.weblib.db import and_
-from app.weblib.db import expunged
-from app.weblib.db import exists
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.expression import true
+from weblib.db import and_
+from weblib.db import expunged
+from weblib.db import exists
+
+from strappon.models import Base
+from strappon.models import ActiveDriverPerk
+from strappon.models import ActivePassengerPerk
+from strappon.models import EligibleDriverPerk
+from strappon.models import EligiblePassengerPerk
+from strappon.models import DriverPerk
+from strappon.models import PassengerPerk
 
 
 class PerksRepository(object):

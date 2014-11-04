@@ -4,7 +4,8 @@
 import json
 from collections import namedtuple
 
-from app.weblib.pubsub import Publisher
+from weblib.pubsub import Publisher
+
 
 ParsedTrace = namedtuple('ParsedTrace',
                          'app_version level date message'.split())

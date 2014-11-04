@@ -3,9 +3,10 @@
 
 import uuid
 
-from app.models import Base
-from app.models import Payment
-from app.weblib.db import func
+from weblib.db import func
+
+from strappon.models import Base
+from strappon.models import Payment
 
 
 class PaymentsRepository(object):

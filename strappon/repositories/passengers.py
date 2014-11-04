@@ -3,10 +3,11 @@
 
 import uuid
 
-from app.models import Passenger
-from app.models import User
-from app.weblib.db import expunged
-from app.weblib.db import joinedload
+from weblib.db import expunged
+from weblib.db import joinedload
+
+from strappon.models import Passenger
+from strappon.models import User
 
 
 class PassengersRepository(object):

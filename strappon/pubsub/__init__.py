@@ -6,7 +6,7 @@ from math import sqrt
 from math import radians
 from math import cos
 
-from app.weblib.pubsub import Publisher
+from weblib.pubsub import Publisher
 
 
 class ACSSessionCreator(Publisher):

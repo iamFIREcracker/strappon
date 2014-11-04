@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from app.weblib.pubsub import Publisher
 from math import floor
+
+from weblib.pubsub import Publisher
 
 
 BASE_COST = 0.30  # € per Km per passengers

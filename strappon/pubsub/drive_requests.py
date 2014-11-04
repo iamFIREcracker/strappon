@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from app.weblib.pubsub import Publisher
-from app.pubsub import serialize_date
+from weblib.pubsub import Publisher
+
+from strappon.pubsub import serialize_date
 
 
 class ActiveDriveRequestsFilterExtractor(Publisher):
