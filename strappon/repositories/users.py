@@ -3,12 +3,11 @@
 
 import uuid
 
-from weblib.db import expunged
-from weblib.db import joinedload
-
 from strappon.models import Token
 from strappon.models import User
 from strappon.repositories.tokens import TokensRepository
+from weblib.db import expunged
+from weblib.db import joinedload
 
 
 class UsersRepository(object):
