@@ -3,12 +3,11 @@
 
 import uuid
 
+from strappon.models import User
+from strappon.models import Driver
 from weblib.db import expunged
 from weblib.db import joinedload
 from weblib.db import joinedload_all
-
-from strappon.models import User
-from strappon.models import Driver
 
 
 class DriversRepository(object):
