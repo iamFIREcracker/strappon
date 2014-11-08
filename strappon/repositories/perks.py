@@ -11,10 +11,6 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import joinedload_all
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.expression import true
-from weblib.db import and_
-from weblib.db import exists
-from weblib.db import expunged
-
 from strappon.models import ActiveDriverPerk
 from strappon.models import ActivePassengerPerk
 from strappon.models import Base
@@ -23,6 +19,9 @@ from strappon.models import EligibleDriverPerk
 from strappon.models import EligiblePassengerPerk
 from strappon.models import PassengerPerk
 from strappon.models import User
+from weblib.db import and_
+from weblib.db import exists
+from weblib.db import expunged
 
 
 EnrichedEligibleDriverPerk = namedtuple('EnrichedEligibleDriverPerk',
