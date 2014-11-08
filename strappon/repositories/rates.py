@@ -3,10 +3,9 @@
 
 import uuid
 
-from weblib.db import func
-
 from strappon.models import Base
 from strappon.models import Rate
+from weblib.db import func
 
 
 class RatesRepository(object):
@@ -32,4 +31,3 @@ class RatesRepository(object):
     def received_rates(rated_user_id):
         return Base.session.query(func.count()).\
                 filter(Rate.rated_user_id == rated_user_id).first()[0]
-
