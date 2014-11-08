@@ -3,10 +3,9 @@
 
 import uuid
 
-from weblib.db import func
-
 from strappon.models import Base
 from strappon.models import Payment
+from weblib.db import func
 
 
 class PaymentsRepository(object):
