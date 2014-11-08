@@ -3,6 +3,7 @@
 
 from weblib.pubsub import Publisher
 
+
 def notificationid_for_user(user_id):
     return "notifications.%s" % (user_id,)
 
