@@ -3,11 +3,10 @@
 
 import uuid
 
-from weblib.db import expunged
-from weblib.db import joinedload
-
 from strappon.models import Passenger
 from strappon.models import User
+from weblib.db import expunged
+from weblib.db import joinedload
 
 
 class PassengersRepository(object):
