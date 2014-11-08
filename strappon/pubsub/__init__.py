@@ -24,6 +24,7 @@ class ACSSessionCreator(Publisher):
         else:
             self.publish('acs_session_created', session_id)
 
+
 class ACSUserIdsNotifier(Publisher):
     def perform(self, push_adapter, session_id, channel, user_ids, payload):
         """Invoke the ``notify`` method of the push notifications adapter
@@ -38,6 +39,7 @@ class ACSUserIdsNotifier(Publisher):
             self.publish('acs_user_ids_not_notified', error)
         else:
             self.publish('acs_user_ids_notified')
+
 
 class ACSPayloadsForUserIdNotifier(Publisher):
     def perform(self, push_adapter, session_id, channel, tuples):
@@ -61,6 +63,7 @@ class PayloadsByUserCreator(Publisher):
 
 EARTH_RADIUS = 6371.009
 KM_PER_DEG_LAT = 2 * pi * EARTH_RADIUS / 360.0
+
 
 def distance(lat1, lon1, lat2, lon2):
     km_per_deg_lon = KM_PER_DEG_LAT * cos(radians(lat1))
