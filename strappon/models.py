@@ -27,6 +27,8 @@ class User(Base, ReprMixin):
     id = Column(String, default=uuid, primary_key=True)
     acs_id = Column(String)  # XXX Should be not nullable
     facebook_id = Column(String)  # XXX Should be not nullable
+    first_name = Column(String, nullable=False, server_default=text(''))
+    last_name = Column(String, nullable=False, server_default=text(''))
     name = Column(String, nullable=False)
     avatar = Column(String, nullable=True)
     email = Column(String, nullable=True)
