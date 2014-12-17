@@ -7,7 +7,6 @@ from weblib.db import Boolean
 from weblib.db import declarative_base
 from weblib.db import relationship
 from weblib.db import uuid
-from weblib.db import Boolean
 from weblib.db import Column
 from weblib.db import DateTime
 from weblib.db import Float
@@ -15,7 +14,6 @@ from weblib.db import ForeignKey
 from weblib.db import Integer
 from weblib.db import String
 from weblib.db import Text
-from weblib.db import Time
 from weblib.db import text
 from weblib.db import ReprMixin
 
@@ -53,6 +51,7 @@ class User(Base, ReprMixin):
     @property
     def created_day(self):
         return self.created.date()
+
 
 class Token(Base, ReprMixin):
     __tablename__ = 'token'
@@ -121,7 +120,6 @@ class Passenger(Base, ReprMixin):
     @property
     def created_day(self):
         return self.created.date()
-
 
 
 class DriveRequest(Base, ReprMixin):
