@@ -10,8 +10,8 @@ kombu==3.0.24
 oauth2==1.5.211
 pytz==2014.10
 redis==2.10.3
--e hg+ssh://hg@bitbucket.org/iamFIREcracker/strappon@02c60ca0dec455f0ea54b9ed1b05fa5f110eb580#egg=strappon-dev
+-e .
 web.py==0.37
 webassets==0.10.1
--e hg+ssh://hg@bitbucket.org/iamFIREcracker/weblib@f862a110667daa0f3a184aa3d64c59c6af26b0ea#egg=weblib-dev
+-e weblib
 wsgiref==0.1.2
