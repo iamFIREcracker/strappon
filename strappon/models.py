@@ -30,6 +30,7 @@ class User(Base, ReprMixin):
     first_name = Column(String, nullable=False, server_default=text(''))
     last_name = Column(String, nullable=False, server_default=text(''))
     name = Column(String, nullable=False)
+    avatar_unresolved = Column(String, nullable=True)
     avatar = Column(String, nullable=True)
     email = Column(String, nullable=True)
     locale = Column(String, nullable=False)
