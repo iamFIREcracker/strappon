@@ -21,11 +21,12 @@ class UsersRepository(object):
 
     @staticmethod
     def add(acs_id, facebook_id, first_name, last_name, name,
-            avatar, email, locale):
+            avatar_unresolved, avatar, email, locale):
         id = unicode(uuid.uuid4())
         user = User(id=id, acs_id=acs_id, facebook_id=facebook_id,
                     first_name=first_name, last_name=last_name, name=name,
-                    avatar=avatar, email=email, locale=locale)
+                    avatar_unresolved=avatar_unresolved, avatar=avatar,
+                    email=email, locale=locale)
         return user
 
     @staticmethod
