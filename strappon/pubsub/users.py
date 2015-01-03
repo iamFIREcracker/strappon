@@ -199,3 +199,9 @@ class UserEnricherPrivate(Publisher):
                                      perks_repository,
                                      payments_repository,
                                      user))
+
+
+class UsersACSUserIdExtractor(Publisher):
+    def perform(self, users):
+        self.publish('acs_user_ids_extracted',
+                     filter(None, [u.acs_id for u in users]))
