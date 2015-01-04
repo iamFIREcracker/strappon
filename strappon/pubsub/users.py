@@ -115,10 +115,10 @@ class UserSerializer(Publisher):
 
 
 def serialize_private(gettext, user):
-    from app.pubsub.perks import serialize_eligible_driver_perk
-    from app.pubsub.perks import serialize_active_driver_perk
-    from app.pubsub.perks import serialize_eligible_passenger_perk
-    from app.pubsub.perks import serialize_active_passenger_perk
+    from strappon.pubsub.perks import serialize_eligible_driver_perk
+    from strappon.pubsub.perks import serialize_active_driver_perk
+    from strappon.pubsub.perks import serialize_eligible_passenger_perk
+    from strappon.pubsub.perks import serialize_active_passenger_perk
 
     localized_gettext = partial(gettext, lang=user.locale)
     data = serialize(user)

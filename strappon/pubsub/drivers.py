@@ -168,7 +168,7 @@ class DriverSerializer(Publisher):
         At the end of the operation the method will emit a 'driver_serialized'
         message containing the serialized object (i.e. driver dictionary).
         """
-        from app.pubsub.users import serialize as serialize_user
+        from strappon.pubsub.users import serialize as serialize_user
         d = serialize(driver)
         d.update(user=serialize_user(driver.user))
         self.publish('driver_serialized', d)
@@ -189,6 +189,6 @@ def enrich(driver):
     return driver
 
 def _enrich(rates_repository, driver):
-    from app.pubsub.users import enrich as enrich_user
+    from strappon.pubsub.users import enrich as enrich_user
     driver.user = enrich_user(rates_repository, driver.user)
     return enrich(driver)

@@ -125,7 +125,7 @@ def serialize(passenger):
 
 
 def _serialize(passenger):
-    from app.pubsub.users import serialize as serialize_user
+    from strappon.pubsub.users import serialize as serialize_user
     d = serialize(passenger)
     d.update(user=serialize_user(passenger.user))
     return d
@@ -199,7 +199,7 @@ def enrich(passenger):
 
 
 def enrich_with_reimbursement(fixed_rate, multiplier, passenger):
-    from app.pubsub.payments import reimbursement_for
+    from strappon.pubsub.payments import reimbursement_for
     passenger.reimbursement = reimbursement_for(fixed_rate,
                                                 multiplier,
                                                 passenger.seats,
@@ -208,7 +208,7 @@ def enrich_with_reimbursement(fixed_rate, multiplier, passenger):
 
 
 def _enrich(rates_repository, fixed_rate, multiplier, passenger):
-    from app.pubsub.users import enrich as enrich_user
+    from strappon.pubsub.users import enrich as enrich_user
     passenger.user = enrich_user(rates_repository, passenger.user)
     return enrich_with_reimbursement(fixed_rate, multiplier, passenger)
 

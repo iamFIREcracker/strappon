@@ -129,9 +129,9 @@ def serialize(request):
 
 
 def _serialize(request):
-    from app.pubsub.drivers import serialize as serialize_driver
-    from app.pubsub.passengers import serialize as serialize_passenger
-    from app.pubsub.users import serialize as serialize_user
+    from strappon.pubsub.drivers import serialize as serialize_driver
+    from strappon.pubsub.passengers import serialize as serialize_passenger
+    from strappon.pubsub.users import serialize as serialize_user
     d = serialize(request)
     d.update(passenger=serialize_passenger(request.passenger))
     d['passenger'].update(user=serialize_user(request.passenger.user))
@@ -180,9 +180,9 @@ def enrich(request):
     return request
 
 def _enrich(rates_repository, request):
-    from app.pubsub.passengers import enrich as enrich_passenger
-    from app.pubsub.drivers import enrich as enrich_driver
-    from app.pubsub.users import enrich as enrich_user
+    from strappon.pubsub.passengers import enrich as enrich_passenger
+    from strappon.pubsub.drivers import enrich as enrich_driver
+    from strappon.pubsub.users import enrich as enrich_user
     request.passenger.user = enrich_user(rates_repository,
                                          request.passenger.user)
     request.passenger = enrich_passenger(request.passenger)
@@ -198,9 +198,9 @@ class DriveRequestsEnricher(Publisher):
 
 
 def _enrich_driver_request(rates_repository, fixed_rate, multiplier, request):
-    from app.pubsub.passengers import enrich_with_reimbursement as enrich_passenger
-    from app.pubsub.drivers import enrich as enrich_driver
-    from app.pubsub.users import enrich as enrich_user
+    from strappon.pubsub.passengers import enrich_with_reimbursement as enrich_passenger
+    from strappon.pubsub.drivers import enrich as enrich_driver
+    from strappon.pubsub.users import enrich as enrich_user
     request.passenger.user = enrich_user(rates_repository,
                                          request.passenger.user)
     request.passenger = enrich_passenger(fixed_rate, multiplier,
