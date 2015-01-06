@@ -66,7 +66,6 @@ KM_PER_DEG_LAT = 2 * pi * EARTH_RADIUS / 360.0
 
 
 def distance(lat1, lon1, lat2, lon2):
-    import pdb; pdb.set_trace()  # XXX BREAKPOINT
     km_per_deg_lon = KM_PER_DEG_LAT * cos(radians(lat1))
     return sqrt((KM_PER_DEG_LAT * (lat1 - lat2)) ** 2 +
                 (km_per_deg_lon * (lon1 - lon2)) ** 2)
