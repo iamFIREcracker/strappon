@@ -29,18 +29,20 @@ class PassengersRepository(object):
 
     @staticmethod
     def copy(other):
-        passenger = Passenger(id=other.id,
-                              user_id=other.user_id,
-                              origin=other.origin,
-                              origin_latitude=other.origin_latitude,
-                              origin_longitude=other.origin_longitude,
-                              destination=other.destination,
-                              destination_latitude=other.destination_latitude,
-                              destination_longitude=other.destination_longitude,
-                              distance=other.distance,
-                              seats=other.seats,
-                              matched=other.matched,
-                              active=other.active)
+        passenger = \
+            Passenger(id=other.id,
+                      user_id=other.user_id,
+                      origin=other.origin,
+                      origin_latitude=other.origin_latitude,
+                      origin_longitude=other.origin_longitude,
+                      destination=other.destination,
+                      destination_latitude=other.destination_latitude,
+                      destination_longitude=other.destination_longitude,
+                      distance=other.distance,
+                      seats=other.seats,
+                      pickup_time=other.pickup_time,
+                      matched=other.matched,
+                      active=other.active)
         return passenger
 
     @staticmethod
@@ -61,7 +63,7 @@ class PassengersRepository(object):
     @staticmethod
     def add(user_id, origin, origin_latitude, origin_longitude,
             destination, destination_latitude, destination_longitude, distance,
-            seats):
+            seats, pickup_time):
         id = unicode(uuid.uuid4())
         passenger = Passenger(id=id,
                               user_id=user_id,
@@ -73,6 +75,7 @@ class PassengersRepository(object):
                               destination_longitude=destination_longitude,
                               distance=distance,
                               seats=seats,
+                              pickup_time=pickup_time,
                               matched=False, active=True)
         return passenger
 

@@ -4,18 +4,19 @@
 from datetime import datetime
 
 from weblib.db import Boolean
-from weblib.db import declarative_base
-from weblib.db import relationship
-from weblib.db import uuid
 from weblib.db import Column
 from weblib.db import DateTime
 from weblib.db import Float
 from weblib.db import ForeignKey
 from weblib.db import Integer
+from weblib.db import ReprMixin
 from weblib.db import String
 from weblib.db import Text
+from weblib.db import Time
+from weblib.db import declarative_base
+from weblib.db import relationship
 from weblib.db import text
-from weblib.db import ReprMixin
+from weblib.db import uuid
 
 
 Base = declarative_base()
@@ -107,6 +108,7 @@ class Passenger(Base, ReprMixin):
     destination_longitude = Column(Float)
     distance = Column(Float, nullable=False, server_default=text('0'))
     seats = Column(Integer)
+    pickup_time = Column(Time, nullable=True)
     matched = Column(Boolean, default=False)
     active = Column(Boolean, default=True)
     created = Column(DateTime, default=datetime.utcnow)

@@ -80,3 +80,9 @@ def serialize_date(date):
     if date is None:
         return None
     return date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def serialize_time(time):
+    if time is None:
+        return None
+    return time.strftime('%H:%MZ')

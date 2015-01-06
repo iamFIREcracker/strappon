@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from weblib.pubsub import Publisher
+from strappon.pubsub import serialize_time
 
 
 class PassengerWithIdGetter(Publisher):
@@ -59,11 +60,11 @@ class ActivePassengerWithIdGetter(Publisher):
 class PassengerCreator(Publisher):
     def perform(self, repository, user_id, origin, origin_latitude,
                 origin_longitude, destination, destination_latitude,
-                destination_longitude, distance, seats):
+                destination_longitude, distance, seats, pickup_time):
         passenger = repository.add(user_id, origin, origin_latitude,
                                    origin_longitude, destination,
                                    destination_latitude, destination_longitude,
-                                   distance, seats)
+                                   distance, seats, pickup_time)
         self.publish('passenger_created', passenger)
 
 
@@ -118,6 +119,7 @@ def serialize(passenger):
              destination_longitude=passenger.destination_longitude,
              distance=passenger.distance,
              seats=passenger.seats,
+             pickup_time=serialize_time(passenger.pickup_time),
              matched=passenger.matched)
     if hasattr(passenger, 'reimbursement'):
         d.update(reimbursement=passenger.reimbursement)
