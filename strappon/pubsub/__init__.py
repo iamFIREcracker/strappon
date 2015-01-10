@@ -85,4 +85,4 @@ def serialize_date(date):
 def serialize_time(time):
     if time is None:
         return None
-    return time.strftime('%H:%MZ')
+    return time.strftime('%H:%M')
