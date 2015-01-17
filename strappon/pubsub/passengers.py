@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from weblib.pubsub import Publisher
+from strappon.pubsub import serialize_date
 from strappon.pubsub import serialize_time
+from weblib.pubsub import Publisher
 
 
 class PassengerWithIdGetter(Publisher):
@@ -120,7 +121,8 @@ def serialize(passenger):
              distance=passenger.distance,
              seats=passenger.seats,
              pickup_time=serialize_time(passenger.pickup_time),
-             matched=passenger.matched)
+             matched=passenger.matched,
+             created=serialize_date(passenger.created))
     if hasattr(passenger, 'reimbursement'):
         d.update(reimbursement=passenger.reimbursement)
     return d
