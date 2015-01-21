@@ -123,6 +123,8 @@ class DriveRequestCancellorByPassengerId(Publisher):
 
 
 def response_time(created, offered_pickup_time):
+    if offered_pickup_time is None:
+        return 0
     response_time = (offered_pickup_time - created).total_seconds() / 60
     response_time = int(math.ceil(response_time))
     return max(0, response_time)
