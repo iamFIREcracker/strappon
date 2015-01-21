@@ -40,7 +40,7 @@ class PassengersRepository(object):
                       destination_longitude=other.destination_longitude,
                       distance=other.distance,
                       seats=other.seats,
-                      pickup_time=other.pickup_time,
+                      pickup_time_new=other.pickup_time_new,
                       matched=other.matched,
                       active=other.active)
         return passenger
@@ -63,7 +63,7 @@ class PassengersRepository(object):
     @staticmethod
     def add(user_id, origin, origin_latitude, origin_longitude,
             destination, destination_latitude, destination_longitude, distance,
-            seats, pickup_time):
+            seats, pickup_time_new):
         id = unicode(uuid.uuid4())
         passenger = Passenger(id=id,
                               user_id=user_id,
@@ -75,7 +75,7 @@ class PassengersRepository(object):
                               destination_longitude=destination_longitude,
                               distance=distance,
                               seats=seats,
-                              pickup_time_new=pickup_time,
+                              pickup_time_new=pickup_time_new,
                               matched=False, active=True)
         return passenger
 

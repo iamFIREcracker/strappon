@@ -119,7 +119,7 @@ def serialize(passenger):
              destination_longitude=passenger.destination_longitude,
              distance=passenger.distance,
              seats=passenger.seats,
-             pickup_time=serialize_date(passenger.pickup_time),
+             pickup_time=serialize_date(passenger.pickup_time_new),
              matched=passenger.matched)
     if hasattr(passenger, 'reimbursement'):
         d.update(reimbursement=passenger.reimbursement)
