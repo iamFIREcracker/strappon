@@ -124,7 +124,7 @@ def serialize(request):
     if request is None:
         return None
     return dict(id=request.id, accepted=request.accepted,
-                response_time=request.response_time,
+                offered_pickup_time=serialize_date(request.offered_pickup_time),
                 created=serialize_date(request.created))
 
 

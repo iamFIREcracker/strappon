@@ -75,7 +75,7 @@ class PassengersRepository(object):
                               destination_longitude=destination_longitude,
                               distance=distance,
                               seats=seats,
-                              pickup_time=pickup_time,
+                              pickup_time_new=pickup_time,
                               matched=False, active=True)
         return passenger
 

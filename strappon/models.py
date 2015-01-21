@@ -109,6 +109,7 @@ class Passenger(Base, ReprMixin):
     distance = Column(Float, nullable=False, server_default=text('0'))
     seats = Column(Integer)
     pickup_time = Column(Time, nullable=True)
+    pickup_time_new = Column('pickup_time_new', DateTime, nullable=True)
     matched = Column(Boolean, default=False)
     active = Column(Boolean, default=True)
     created = Column(DateTime, default=datetime.utcnow)
@@ -137,6 +138,7 @@ class DriveRequest(Base, ReprMixin):
     cancelled = Column(Boolean, default=False)
     active = Column(Boolean, default=True)
     response_time = Column(Integer, nullable=False, server_default=text('0'))
+    offered_pickup_time = Column(DateTime, nullable=True)
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=datetime.utcnow,
                      onupdate=datetime.utcnow)

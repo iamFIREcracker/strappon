@@ -76,12 +76,13 @@ class DriveRequestsRepository(object):
                         filter(DriveRequest.active == True)]
 
     @staticmethod
-    def add(driver_id, passenger_id, response_time=0):
+    def add(driver_id, passenger_id, offered_pickup_time):
         id = unicode(uuid.uuid4())
         drive_request = DriveRequest(id=id, driver_id=driver_id,
                                      passenger_id=passenger_id,
                                      accepted=False, cancelled=False,
-                                     active=True, response_time=response_time,
+                                     active=True,
+                                     offered_pickup_time=offered_pickup_time,
                                      created=datetime.utcnow())
         return drive_request
 

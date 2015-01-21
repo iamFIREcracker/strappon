@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from strappon.pubsub import serialize_date
-from strappon.pubsub import serialize_time
 from weblib.pubsub import Publisher
 
 
@@ -120,9 +119,8 @@ def serialize(passenger):
              destination_longitude=passenger.destination_longitude,
              distance=passenger.distance,
              seats=passenger.seats,
-             pickup_time=serialize_time(passenger.pickup_time),
-             matched=passenger.matched,
-             created=serialize_date(passenger.created))
+             pickup_time=serialize_date(passenger.pickup_time),
+             matched=passenger.matched)
     if hasattr(passenger, 'reimbursement'):
         d.update(reimbursement=passenger.reimbursement)
     return d
