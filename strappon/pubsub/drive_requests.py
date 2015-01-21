@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import math
+
 from weblib.pubsub import Publisher
 
 from strappon.pubsub import serialize_date
@@ -120,11 +122,19 @@ class DriveRequestCancellorByPassengerId(Publisher):
             self.publish('drive_request_cancelled', request)
 
 
+def response_time(created, offered_pickup_time):
+    response_time = (offered_pickup_time - created).total_seconds() / 60
+    response_time = int(math.ceil(response_time))
+    return max(0, response_time)
+
+
 def serialize(request):
     if request is None:
         return None
     return dict(id=request.id, accepted=request.accepted,
                 offered_pickup_time=serialize_date(request.offered_pickup_time),
+                response_time=response_time(request.created,
+                                            request.offered_pickup_time),
                 created=serialize_date(request.created))
 
 
