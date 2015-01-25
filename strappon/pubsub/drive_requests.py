@@ -100,7 +100,7 @@ class DriveRequestAcceptor(Publisher):
             self.publish('drive_request_accepted', request)
 
 
-class DriveRequestByIdAndDriverIdGetter(Publisher):
+class DriveRequestWithIdAndDriverIdGetter(Publisher):
     def perform(self, repository, id, driver_id):
         request = repository.get_by_id_and_driver_id(id, driver_id)
         if request is None:
