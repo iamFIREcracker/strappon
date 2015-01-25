@@ -163,6 +163,14 @@ class PassengerUnmatcher(Publisher):
         self.publish('passenger_unmatched', unmatch(passenger))
 
 
+class MultiplePassengersUnmatcher(Publisher):
+    def perform(self, passengers):
+        def unmatch(p):
+            p.matched = False
+            return p
+        self.publish('passenger_unmatched', [unmatch(p) for p in passengers])
+
+
 class MultiplePassengerMatcher(Publisher):
     def perform(self, passengers):
         """Sets the 'matched' property of the given list of passengers to
