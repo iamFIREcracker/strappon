@@ -87,17 +87,17 @@ class DriveRequestsRepository(object):
         return drive_request
 
     @staticmethod
-    def cancel_by_driver_id(id, driver_id):
-        request = expunged(DriveRequest.query.\
-                                filter_by(id=id).\
-                                filter_by(driver_id=driver_id).\
-                                filter_by(active=True).first(),
-                           DriveRequest.session)
-        if request:
-            request.active = False
-            request.cancelled = True
-        return request
+    def _get_by_id_and_driver_id(id, driver_id):
+        return (DriveRequest.query.
+                filter_by(id=id).
+                filter_by(driver_id=driver_id).
+                filter_by(active=True))
 
+    @staticmethod
+    def get_by_id_and_driver_id(id, driver_id):
+        return expunged(DriveRequestsRepository.
+                        _get_by_id_and_driver_id().first(),
+                        DriveRequest.session)
 
     @staticmethod
     def cancel_by_passenger_id(id, passenger_id):
