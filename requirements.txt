@@ -14,5 +14,5 @@ requests==2.5.1
 -e .
 web.py==0.37
 webassets==0.10.1
--e ssh://hg@bitbucket.org/iamFIREcracker/weblib@tip#egg=weblib-dev
+-e ssh://hg@bitbucket.org/iamFIREcracker/weblib@506f7aaa833540747e5558360fe4428bad154a2b#egg=weblib-dev
 wsgiref==0.1.2
