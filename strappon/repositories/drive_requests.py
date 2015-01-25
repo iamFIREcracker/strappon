@@ -88,7 +88,9 @@ class DriveRequestsRepository(object):
 
     @staticmethod
     def get_by_id_and_driver_id(id, driver_id):
+        options = [joinedload_all('passenger')]
         return expunged(DriveRequest.query.
+                        options(*options).
                         filter_by(id=id).
                         filter_by(driver_id=driver_id).
                         filter_by(active=True).
