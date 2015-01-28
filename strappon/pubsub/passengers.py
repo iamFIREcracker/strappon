@@ -39,8 +39,9 @@ class UnmatchedPassengersGetter(Publisher):
 
 
 class ExpiredPassengersGetter(Publisher):
-    def perform(self, repository):
-        self.publish('passengers_found', repository.get_all_expired())
+    def perform(self, repository, expire_after):
+        self.publish('passengers_found',
+                     repository.get_all_expired(expire_after))
 
 
 class ActivePassengersGetter(Publisher):

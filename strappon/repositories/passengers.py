@@ -59,8 +59,8 @@ class PassengersRepository(object):
                         filter(Passenger.matched == False)]
 
     @staticmethod
-    def get_all_expired():
-        return get_all_expired()
+    def get_all_expired(expire_after):
+        return get_all_expired(expire_after)
 
     @staticmethod
     def get_all_active():
@@ -98,8 +98,8 @@ class PassengersRepository(object):
             return passenger
 
 
-def get_all_expired():
-    expire_date = date.today() - timedelta(minutes=5)
+def get_all_expired(expire_after):
+    expire_date = date.today() - timedelta(minutes=expire_after)
     return [expunged(p, Passenger.session)
             for p in Passenger.query.options(joinedload('user')).
             filter(User.deleted == false()).
