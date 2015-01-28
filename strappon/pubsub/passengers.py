@@ -38,6 +38,11 @@ class UnmatchedPassengersGetter(Publisher):
         self.publish('passengers_found', repository.get_all_unmatched())
 
 
+class ExpiredPassengersGetter(Publisher):
+    def perform(self, repository):
+        self.publish('passengers_found', repository.get_all_expired())
+
+
 class ActivePassengersGetter(Publisher):
     def perform(self, repository):
         """Search for all the active passengers around.

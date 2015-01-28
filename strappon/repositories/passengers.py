@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+from datetime import date
+from datetime import timedelta
 
 from strappon.models import Passenger
 from strappon.models import User
+from sqlalchemy.sql.expression import true
+from sqlalchemy.sql.expression import false
+from weblib.db import or_
 from weblib.db import expunged
 from weblib.db import joinedload
 
@@ -54,6 +59,10 @@ class PassengersRepository(object):
                         filter(Passenger.matched == False)]
 
     @staticmethod
+    def get_all_expired():
+        return get_all_expired()
+
+    @staticmethod
     def get_all_active():
         return [expunged(p, Passenger.session)
                 for p in Passenger.query.options(joinedload('user')).\
@@ -87,3 +96,14 @@ class PassengersRepository(object):
         else:
             passenger.active = False
             return passenger
+
+
+def get_all_expired():
+    expire_date = date.today() - timedelta(minutes=5)
+    return [expunged(p, Passenger.session)
+            for p in Passenger.query.options(joinedload('user')).
+            filter(User.deleted == false()).
+            filter(Passenger.active == true()).
+            filter(Passenger.matched == false()).
+            filter(or_(Passenger.pickup_time_new is None,
+                       Passenger.pickup_time_new < expire_date))]
