@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import uuid
-from datetime import date
+from datetime import datetime
 from datetime import timedelta
 
 from strappon.models import Passenger
 from strappon.models import User
 from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.expression import false
+from sqlalchemy.sql.expression import null
+from weblib.db import and_
 from weblib.db import or_
 from weblib.db import expunged
 from weblib.db import joinedload
@@ -64,10 +66,7 @@ class PassengersRepository(object):
 
     @staticmethod
     def get_all_active():
-        return [expunged(p, Passenger.session)
-                for p in Passenger.query.options(joinedload('user')).\
-                        filter(User.deleted == False).\
-                        filter(Passenger.active == True)]
+        return get_all_active()
 
     @staticmethod
     def add(user_id, origin, origin_latitude, origin_longitude,
@@ -98,12 +97,29 @@ class PassengersRepository(object):
             return passenger
 
 
-def get_all_expired(expire_after):
-    expire_date = date.today() - timedelta(minutes=expire_after)
+def _get_all_active():
+    return (Passenger.query.options(joinedload('user')).
+            filter(User.deleted == false()).
+            filter(Passenger.active == true()))
+
+
+def get_all_active():
     return [expunged(p, Passenger.session)
-            for p in Passenger.query.options(joinedload('user')).
+            for p in _get_all_active()]
+
+
+def _get_all_expired(expire_after):
+    expire_date = datetime.utcnow() - timedelta(minutes=expire_after)
+    return (Passenger.query.options(joinedload('user')).
             filter(User.deleted == false()).
             filter(Passenger.active == true()).
             filter(Passenger.matched == false()).
-            filter(or_(Passenger.pickup_time_new is None,
-                       Passenger.pickup_time_new < expire_date))]
+            filter(or_(and_(Passenger.pickup_time_new == null(),
+                            Passenger.created < expire_date),
+                       and_(Passenger.pickup_time_new != null(),
+                            Passenger.pickup_time_new < expire_date))))
+
+
+def get_all_expired(expire_after):
+    return [expunged(p, Passenger.session)
+            for p in _get_all_expired(expire_after)]
