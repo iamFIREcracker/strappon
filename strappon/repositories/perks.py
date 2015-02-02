@@ -279,9 +279,3 @@ class PerksRepository(object):
     def active_passenger_perks_without_standard_one(user_id):
         return (p for p in PerksRepository.active_passenger_perks(user_id)
                 if p.perk.name != PerksRepository.STANDARD_PASSENGER_NAME)
-
-
-if __name__ == '__main__':
-    print (PerksRepository.
-           eligible_driver_perk_with_name_and_user_id('driver_early_bird',
-                                                      '570b9b1e-7033-4b5f-830c-cadd3f949d52'))

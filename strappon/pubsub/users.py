@@ -144,6 +144,8 @@ def serialize_private(gettext, user):
             for p in user.active_passenger_perks])
     if hasattr(user, 'balance'):
         data.update(balance=user.balance)
+    if hasattr(user, 'bonus_balance'):
+        data.update(bonus_balance=user.bonus_balance)
     return data
 
 
@@ -181,6 +183,7 @@ def enrich_private(rates_repository, drive_requests_repository,
     user.active_passenger_perks = perks_repository.\
         active_passenger_perks_without_standard_one(user.id)
     user.balance = payments_repository.balance(user.id)
+    user.bonus_balance = payments_repository.bonus_balance(user.id)
     return user
 
 

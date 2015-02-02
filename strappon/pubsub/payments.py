@@ -33,16 +33,35 @@ class FareCalculator(Publisher):
 
 
 class ReimbursementCreator(Publisher):
-    def perform(self, payments_repository, drive_request_id, driver_id,
+    def perform(self, payments_repository, drive_request_id, driver_user_id,
                 credits_):
         self.publish('reimbursement_created',
-                     payments_repository.add(drive_request_id, None,
-                                             driver_id, credits_))
+                     payments_repository.add(drive_request_id,
+                                             None,
+                                             driver_user_id,
+                                             credits_,
+                                             None,
+                                             None))
 
 
 class FareCreator(Publisher):
-    def perform(self, payments_repository, drive_request_id, passenger_id,
+    def perform(self, payments_repository, drive_request_id, passenger_user_id,
                 credits_):
         self.publish('fare_created',
-                     payments_repository.add(drive_request_id, passenger_id,
-                                             None, credits_))
+                     payments_repository.add(drive_request_id,
+                                             passenger_user_id,
+                                             None,
+                                             credits_,
+                                             None,
+                                             None))
+
+
+class PaymentForPromoCreator(Publisher):
+    def perform(self, payments_repository, user_id, promo):
+        self.publish('payment_created',
+                     payments_repository.add(None,
+                                             None,
+                                             user_id,
+                                             0,
+                                             promo.credits,
+                                             promo.id))
