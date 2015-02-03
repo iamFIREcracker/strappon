@@ -56,12 +56,12 @@ class FareCreator(Publisher):
                                              None))
 
 
-class PaymentForPromoCreator(Publisher):
-    def perform(self, payments_repository, user_id, promo):
+class PaymentForPromoCodeCreator(Publisher):
+    def perform(self, payments_repository, user_id, promo_code):
         self.publish('payment_created',
                      payments_repository.add(None,
                                              None,
                                              user_id,
                                              0,
-                                             promo.credits,
-                                             promo.id))
+                                             promo_code.credits,
+                                             promo_code.id))

@@ -267,7 +267,7 @@ class Payment(Base, ReprMixin):
     payee_user_id = Column(String, ForeignKey('user.id'), nullable=True)
     credits = Column(Integer, nullable=False)
     bonus_credits = Column(Integer, nullable=True)
-    promo_id = Column(String, ForeignKey('promo.id'), nullable=True)
+    promo_code_id = Column(String, ForeignKey('promo_code.id'), nullable=True)
 
 
 class Trace(Base, ReprMixin):
@@ -303,8 +303,8 @@ class Feedback(Base, ReprMixin):
     user = relationship('User', uselist=False)
 
 
-class Promo(Base, ReprMixin):
-    __tablename__ = 'promo'
+class PromoCode(Base, ReprMixin):
+    __tablename__ = 'promo_code'
 
     id = Column(String, default=uuid, primary_key=True)
     created = Column(DateTime, default=datetime.utcnow)
@@ -316,12 +316,12 @@ class Promo(Base, ReprMixin):
     credits = Column(Integer, nullable=False)
 
 
-class UserPromo(Base, ReprMixin):
-    __tablename__ = 'user_promo'
+class UserPromoCode(Base, ReprMixin):
+    __tablename__ = 'user_promo_code'
 
     id = Column(String, default=uuid, primary_key=True)
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=datetime.utcnow,
                      onupdate=datetime.utcnow)
     user_id = Column(String, ForeignKey('user.id'), nullable=False)
-    promo_id = Column(String, ForeignKey('promo.id'), nullable=False)
+    promo_code_id = Column(String, ForeignKey('promo_code.id'), nullable=False)

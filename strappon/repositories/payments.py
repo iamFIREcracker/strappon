@@ -11,14 +11,14 @@ from weblib.db import func
 class PaymentsRepository(object):
     @staticmethod
     def add(drive_request_id, payer_user_id, payee_user_id, credits,
-            bonus_credits, promo_id):
+            bonus_credits, promo_code_id):
         return Payment(id=unicode(uuid.uuid4()),
                        drive_request_id=drive_request_id,
                        payer_user_id=payer_user_id,
                        payee_user_id=payee_user_id,
                        credits=credits,
                        bonus_credits=bonus_credits,
-                       promo_id=promo_id)
+                       promo_code_id=promo_code_id)
 
     @staticmethod
     def balance(user_id):
