@@ -26,3 +26,10 @@ class PromoActivator(Publisher):
     def perform(self, repository, user_id, promo_id):
         self.publish('user_promo_activated',
                      repository.activate_promo(user_id, promo_id))
+
+
+class PromoSerializer(Publisher):
+    def perform(self, promo):
+        self.publish('promo_serialized', dict(name=promo.name,
+                                              active_for=promo.active_for,
+                                              credits=promo.credits))
