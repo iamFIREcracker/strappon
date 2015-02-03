@@ -5,11 +5,11 @@ import uuid
 from datetime import datetime
 
 from strappon.models import Base
-from strappon.models import Driver
 from strappon.models import DriveRequest
 from strappon.models import Passenger
 from strappon.models import Rate
 from strappon.models import User
+from sqlalchemy.sql.expression import true
 from weblib.db import and_
 from weblib.db import exists
 from weblib.db import expunged
@@ -123,21 +123,40 @@ class DriveRequestsRepository(object):
         return request
 
     @staticmethod
-    def rides_given(user_id):
+    def rides_driver(user_id):
         return Base.session.query(func.count()).\
             select_from(DriveRequest).\
             join('driver', 'user').\
             filter(User.id == user_id).\
-            filter(DriveRequest.accepted == True).\
+            filter(DriveRequest.accepted == true()).\
             first()[0]
 
     @staticmethod
-    def distance_driven(user_id):
+    def rides_passenger(user_id):
+        return Base.session.query(func.count()).\
+            select_from(DriveRequest).\
+            join('passenger', 'user').\
+            filter(User.id == user_id).\
+            filter(DriveRequest.accepted == true()).\
+            first()[0]
+
+    @staticmethod
+    def distance_driver(user_id):
         return Base.session.query(func.coalesce(func.sum(Passenger.distance),
                                                 0.0)).\
             select_from(DriveRequest).\
             join('driver', 'user').\
             join('passenger').\
             filter(User.id == user_id).\
-            filter(DriveRequest.accepted == True).\
+            filter(DriveRequest.accepted == true()).\
+            first()[0]
+
+    @staticmethod
+    def distance_passenger(user_id):
+        return Base.session.query(func.coalesce(func.sum(Passenger.distance),
+                                                0.0)).\
+            select_from(DriveRequest).\
+            join('passenger', 'user').\
+            filter(User.id == user_id).\
+            filter(DriveRequest.accepted == true()).\
             first()[0]

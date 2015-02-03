@@ -50,9 +50,9 @@ class DriverErlyBirdPerkEnricher(Publisher):
         self.publish('perks_enriched',
                      [EnrichedDriverEarlyBirdPerk(p,
                                                   drivers_repository.
-                                                  rides_given(p.user_id,
-                                                              p.created,
-                                                              p.valid_until))
+                                                  rides_driver(p.user_id,
+                                                               p.created,
+                                                               p.valid_until))
                       for p in perks])
 
 

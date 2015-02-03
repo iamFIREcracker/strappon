@@ -122,10 +122,16 @@ def serialize_private(gettext, user):
 
     localized_gettext = partial(gettext, lang=user.locale)
     data = serialize(user)
-    if hasattr(user, 'rides_given'):
-        data.update(rides_given=user.rides_given)
-    if hasattr(user, 'distance_driven'):
-        data.update(distance_driven=user.distance_driven)
+    if hasattr(user, 'rides_driver'):
+        data.update(rides_driver=user.rides_driver,
+                    rides_given=user.rides_driver)
+    if hasattr(user, 'rides_passenger'):
+        data.update(rides_passenger=user.rides_passenger)
+    if hasattr(user, 'distance_driver'):
+        data.update(distance_driver=user.distance_driver,
+                    distance_driven=user.distance_driver)
+    if hasattr(user, 'distance_passenger'):
+        data.update(distance_passenger=user.distance_passenger)
     if hasattr(user, 'eligible_driver_perks'):
         data.update(eligible_driver_perks=[
             serialize_eligible_driver_perk(localized_gettext, p)
@@ -172,8 +178,11 @@ class UserEnricher(Publisher):
 def enrich_private(rates_repository, drive_requests_repository,
                    perks_repository, payments_repository, user):
     user = enrich(rates_repository, user)
-    user.rides_given = drive_requests_repository.rides_given(user.id)
-    user.distance_driven = drive_requests_repository.distance_driven(user.id)
+    user.rides_driver = drive_requests_repository.rides_driver(user.id)
+    user.rides_passenger = drive_requests_repository.rides_passenger(user.id)
+    user.distance_driver = drive_requests_repository.distance_driver(user.id)
+    user.distance_passenger = \
+        drive_requests_repository.distance_passenger(user.id)
     user.eligible_driver_perks = perks_repository.\
         eligible_driver_perks(user.id)
     user.active_driver_perks = perks_repository.\
