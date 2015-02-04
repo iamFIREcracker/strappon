@@ -35,25 +35,33 @@ class FareCalculator(Publisher):
 class ReimbursementCreator(Publisher):
     def perform(self, payments_repository, drive_request_id, driver_user_id,
                 credits_):
-        self.publish('reimbursement_created',
-                     payments_repository.add(drive_request_id,
-                                             None,
-                                             driver_user_id,
-                                             credits_,
-                                             None,
-                                             None))
+        self.publish('payments_created',
+                     [payments_repository.add(drive_request_id,
+                                              None,
+                                              driver_user_id,
+                                              credits_,
+                                              None,
+                                              None)])
 
 
 class FareCreator(Publisher):
     def perform(self, payments_repository, drive_request_id, passenger_user_id,
-                credits_):
-        self.publish('fare_created',
-                     payments_repository.add(drive_request_id,
-                                             passenger_user_id,
-                                             None,
-                                             credits_,
-                                             None,
-                                             None))
+                detailed_balance, credits_):
+        payments = []
+        for (amount, kind) in reversed(detailed_balance):
+            if credits_ > 0:
+                value = min(credits_, amount)
+                credits_ -= value
+                real_credits = value if kind is None else 0
+                bonus_credits = value if kind is not None else 0
+                payments.append(payments_repository.add(drive_request_id,
+                                                        passenger_user_id,
+                                                        None,
+                                                        real_credits,
+                                                        bonus_credits,
+                                                        None))
+
+        self.publish('payments_created', payments)
 
 
 class PaymentForPromoCodeCreator(Publisher):
