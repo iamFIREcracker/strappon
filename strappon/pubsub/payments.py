@@ -65,3 +65,20 @@ class PaymentForPromoCodeCreator(Publisher):
                                              0,
                                              promo_code.credits,
                                              promo_code.id))
+
+
+class CreditsByUserIdGetter(Publisher):
+    def perform(self, payments_repository, user_id):
+        self.publish('credits_found',
+                     payments_repository.detailed_balance(user_id))
+
+
+class CreditsReserver(Publisher):
+    def perform(self, payments_repository, detailed_balance, credits):
+        for (amount, kind) in detailed_balance:
+            if credits > 0:
+                credits -= amount
+        if credits > 0:
+            self.publish('credits_not_found', credits)
+        else:
+            self.publish('payments_created', None)

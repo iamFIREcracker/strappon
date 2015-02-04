@@ -53,3 +53,8 @@ class PaymentsRepository(object):
         return Base.session.\
             query(func.coalesce(func.sum(Payment.bonus_credits), 0.0)).\
             filter(Payment.payer_user_id == user_id).first()[0]
+
+    @staticmethod
+    def detailed_balance(user_id):
+        return [(PaymentsRepository.balance(user_id), None),
+                (PaymentsRepository.bonus_balance(user_id), 'bonus')]
