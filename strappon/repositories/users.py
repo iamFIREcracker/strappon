@@ -6,8 +6,12 @@ import uuid
 from strappon.models import Token
 from strappon.models import User
 from strappon.repositories.tokens import TokensRepository
+from sqlalchemy.orm import aliased
+from weblib.db import and_
+from weblib.db import exists
 from weblib.db import expunged
 from weblib.db import joinedload
+from weblib.db import joinedload_all
 
 
 class UsersRepository(object):
@@ -34,14 +38,8 @@ class UsersRepository(object):
         return TokensRepository.add(user_id)
 
     @staticmethod
-    def authorized_by(token):
-        return expunged(User.query.options(joinedload('active_driver'),
-                                           joinedload('active_passenger')).\
-                        filter(Token.id == token).\
-                        filter(User.id == Token.user_id).\
-                        filter(User.deleted == False).\
-                        first(),
-                        User.session)
+    def authorized_by(token_id):
+        return authorized_by(token_id)
 
     @staticmethod
     def with_facebook_id(facebook_id):
@@ -56,3 +54,17 @@ class UsersRepository(object):
                                 filter(User.acs_id == acs_id).\
                                 filter(User.deleted == False).first(),
                         User.session)
+
+
+def authorized_by(token_id):
+    Token2 = aliased(Token)
+    token = (Token.query.options(joinedload_all('user.active_driver'),
+                                 joinedload_all('user.active_passenger')).
+             filter(Token.id == token_id).
+             filter(~exists().where(
+                 and_(Token2.user_id == Token.user_id,
+                      Token2.created > Token.created))).
+             first())
+    if token is None or token.id != token_id:
+        return None
+    return expunged(token.user, Token.session)

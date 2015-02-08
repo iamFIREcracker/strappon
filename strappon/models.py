@@ -65,6 +65,8 @@ class Token(Base, ReprMixin):
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=datetime.utcnow,
                      onupdate=datetime.utcnow)
+    user = \
+        relationship('User', uselist=False, cascade='expunge')
 
 
 class Driver(Base, ReprMixin):
