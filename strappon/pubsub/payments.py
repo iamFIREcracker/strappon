@@ -48,19 +48,18 @@ class FareCreator(Publisher):
     def perform(self, payments_repository, drive_request_id, passenger_user_id,
                 detailed_balance, credits_):
         payments = []
-        for (amount, kind) in reversed(detailed_balance):
+        for (amount, promo_code_id) in reversed(detailed_balance):
             if credits_ > 0:
                 value = min(credits_, amount)
                 credits_ -= value
-                real_credits = value if kind is None else 0
-                bonus_credits = value if kind is not None else 0
+                real_credits = value if promo_code_id is None else 0
+                bonus_credits = value if promo_code_id is not None else 0
                 payments.append(payments_repository.add(drive_request_id,
                                                         passenger_user_id,
                                                         None,
                                                         real_credits,
                                                         bonus_credits,
-                                                        None))
-
+                                                        promo_code_id))
         self.publish('payments_created', payments)
 
 
@@ -83,7 +82,7 @@ class CreditsByUserIdGetter(Publisher):
 
 class CreditsReserver(Publisher):
     def perform(self, payments_repository, detailed_balance, credits):
-        for (amount, kind) in detailed_balance:
+        for (amount, _) in detailed_balance:
             if credits > 0:
                 credits -= amount
         if credits > 0:

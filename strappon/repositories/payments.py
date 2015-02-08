@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+from math import fsum
+from itertools import groupby
 
+from sqlalchemy import or_
 from strappon.models import Base
 from strappon.models import Payment
-from weblib.db import func
 
 
 class PaymentsRepository(object):
@@ -21,40 +23,43 @@ class PaymentsRepository(object):
                        promo_code_id=promo_code_id)
 
     @staticmethod
+    def detailed_balance(user_id):
+        return detailed_balance(user_id)
+
+    @staticmethod
     def balance(user_id):
-        return PaymentsRepository.income(user_id) -\
-            PaymentsRepository.outcome(user_id)
-
-    @staticmethod
-    def income(user_id):
-        return Base.session.query(func.coalesce(func.sum(Payment.credits),
-                                                0.0)).\
-            filter(Payment.payee_user_id == user_id).first()[0]
-
-    @staticmethod
-    def outcome(user_id):
-        return Base.session.query(func.coalesce(func.sum(Payment.credits),
-                                                0.0)).\
-            filter(Payment.payer_user_id == user_id).first()[0]
+        return balance(user_id)
 
     @staticmethod
     def bonus_balance(user_id):
-        return PaymentsRepository.bonus_income(user_id) -\
-            PaymentsRepository.bonus_outcome(user_id)
+        return bonus_balance(user_id)
 
-    @staticmethod
-    def bonus_income(user_id):
-        return Base.session.\
-            query(func.coalesce(func.sum(Payment.bonus_credits), 0.0)).\
-            filter(Payment.payee_user_id == user_id).first()[0]
 
-    @staticmethod
-    def bonus_outcome(user_id):
-        return Base.session.\
-            query(func.coalesce(func.sum(Payment.bonus_credits), 0.0)).\
-            filter(Payment.payer_user_id == user_id).first()[0]
+def signed_credits(payment):
+    credits = (payment.credits
+               if payment.promo_code_id is None
+               else payment.bonus_credits)
+    credits = credits if payment.payee_user_id is not None else -credits
+    return credits
 
-    @staticmethod
-    def detailed_balance(user_id):
-        return [(PaymentsRepository.balance(user_id), None),
-                (PaymentsRepository.bonus_balance(user_id), 'bonus')]
+
+def detailed_balance(user_id):
+    q = list(Base.session.query(Payment).
+             filter(or_(Payment.payee_user_id == user_id,
+                        Payment.payer_user_id == user_id)).
+             order_by(Payment.promo_code_id))
+
+    for k, g in groupby(q, lambda p: p.promo_code_id):
+        yield (fsum(map(signed_credits, g)), k)
+
+
+def balance(user_id):
+    return fsum(map(lambda (credits, promo): credits,
+                    filter(lambda (credits, promo): promo is None,
+                           detailed_balance(user_id))))
+
+
+def bonus_balance(user_id):
+    return fsum(map(lambda (credits, promo): credits,
+                    filter(lambda (credits, promo): promo is not None,
+                           detailed_balance(user_id))))
