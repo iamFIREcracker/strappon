@@ -44,12 +44,11 @@ def signed_credits(payment):
 
 
 def detailed_balance(user_id):
-    q = list(Base.session.query(Payment).
-             filter(or_(Payment.payee_user_id == user_id,
-                        Payment.payer_user_id == user_id)).
-             order_by(Payment.promo_code_id))
-
-    for k, g in groupby(q, lambda p: p.promo_code_id):
+    query = list(Base.session.query(Payment).
+                 filter(or_(Payment.payee_user_id == user_id,
+                            Payment.payer_user_id == user_id)).
+                 order_by(Payment.promo_code_id))
+    for k, g in groupby(query, lambda p: p.promo_code_id):
         yield (fsum(map(signed_credits, g)), k)
 
 
