@@ -11,6 +11,7 @@ from strappon.models import UserPromoCode
 
 
 class PromoCodesRepository(object):
+    NEW_USER = 'NEWUSER'
 
     @staticmethod
     def add(name, eligible_till, active_for, credits):
