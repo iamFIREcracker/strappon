@@ -48,8 +48,8 @@ def detailed_balance(user_id):
                  filter(or_(Payment.payee_user_id == user_id,
                             Payment.payer_user_id == user_id)).
                  order_by(Payment.promo_code_id))
-    for k, g in groupby(query, lambda p: p.promo_code_id):
-        yield (fsum(map(signed_credits, g)), k)
+    return [(fsum(map(signed_credits, g)), k)
+            for k, g in groupby(query, lambda p: p.promo_code_id)]
 
 
 def balance(user_id):
