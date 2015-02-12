@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from math import floor
+from math import pi
 
 from weblib.pubsub import Publisher
 
@@ -10,8 +10,16 @@ BASE_COST = 0.30  # € per Km per passengers
 
 
 def reimbursement_for(fixed_rate, multiplier, seats, distance):
-    return fixed_rate + \
-        multiplier * seats * floor(1.0 + 1.2 * distance) * BASE_COST
+    if distance <= pi:
+        if seats == 1:
+            return 1.5
+        else:
+            return 3 / seats
+    else:
+        if seats == 1:
+            return 2.5
+        else:
+            return 5 / seats
 
 
 class ReimbursementCalculator(Publisher):
@@ -22,8 +30,16 @@ class ReimbursementCalculator(Publisher):
 
 
 def fare_for(fixed_rate, multiplier, seats, distance):
-    return fixed_rate + \
-        multiplier * seats * floor(1.0 + 1.2 * distance) * BASE_COST
+    if distance <= pi:
+        if seats == 1:
+            return 1.5
+        else:
+            return 3 / seats
+    else:
+        if seats == 1:
+            return 2.5
+        else:
+            return 5 / seats
 
 
 class FareCalculator(Publisher):
