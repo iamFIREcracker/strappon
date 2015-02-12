@@ -10,16 +10,17 @@ BASE_COST = 0.30  # € per Km per passengers
 
 
 def reimbursement_for(fixed_rate, multiplier, seats, distance):
-    if distance <= pi:
+    adjusted_distance = distance * 1.5
+    if adjusted_distance <= pi:
         if seats == 1:
             return 1.5
         else:
-            return 3 / seats
+            return 3
     else:
         if seats == 1:
             return 2.5
         else:
-            return 5 / seats
+            return 5
 
 
 class ReimbursementCalculator(Publisher):
@@ -30,16 +31,17 @@ class ReimbursementCalculator(Publisher):
 
 
 def fare_for(fixed_rate, multiplier, seats, distance):
-    if distance <= pi:
+    adjusted_distance = distance * 1.5
+    if adjusted_distance <= pi:
         if seats == 1:
             return 1.5
         else:
-            return 3 / seats
+            return 3
     else:
         if seats == 1:
             return 2.5
         else:
-            return 5 / seats
+            return 5
 
 
 class FareCalculator(Publisher):
