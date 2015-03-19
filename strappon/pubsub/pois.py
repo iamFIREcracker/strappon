@@ -8,13 +8,13 @@ from strappon.pubsub import serialize_date
 from weblib.pubsub import Publisher
 
 
-class ActivePOIExtractor(Publisher):
-    def perform(self, poi):
+class ActivePOISExtractor(Publisher):
+    def perform(self, pois):
         now = dt.utcnow()
         def predicate(p):
             return (now.date() >= p['starts'].date() and
                     now <= p['ends'])
-        self.publish('poi_extracted', filter(predicate, poi))
+        self.publish('pois_extracted', filter(predicate, pois))
 
 
 def serialize(poi):
@@ -26,7 +26,7 @@ def serialize(poi):
     return data
 
 
-class POISerializer(Publisher):
-    def perform(self, poi):
-        self.publish('poi_serialized',
-                     [serialize(p) for p in poi])
+class POISSerializer(Publisher):
+    def perform(self, pois):
+        self.publish('pois_serialized',
+                     [serialize(poi) for poi in pois])
