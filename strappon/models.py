@@ -148,6 +148,10 @@ class DriveRequest(Base, ReprMixin):
     driver = relationship('Driver', uselist=False, cascade='expunge')
     passenger = relationship('Passenger', uselist=False, cascade='expunge')
 
+    @property
+    def created_day(self):
+        return self.created.date()
+
 
 class Rate(Base, ReprMixin):
     __tablename__ = 'rate'
