@@ -308,6 +308,9 @@ class Feedback(Base, ReprMixin):
 
     user = relationship('User', uselist=False)
 
+    @property
+    def created_day(self):
+        return self.created.date()
 
 class PromoCode(Base, ReprMixin):
     __tablename__ = 'promo_code'
