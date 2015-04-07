@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections import namedtuple
 from functools import partial
 
 from weblib.pubsub import Publisher
@@ -106,6 +107,9 @@ def serialize(user):
         data.update(stars=user.stars)
     if hasattr(user, 'received_rates'):
         data.update(received_rates=user.received_rates)
+    if hasattr(user, 'mutual_friends'):
+        data.update(mutual_friends=[dict(name=mf.name, avatar=mf.avatar)
+                                    for mf in user.mutual_friends])
     return data
 
 
@@ -160,9 +164,15 @@ class UserSerializerPrivate(Publisher):
         self.publish('user_serialized', serialize_private(gettext, user))
 
 
-def enrich(rates_repository, user):
+def enrich_common(rates_repository, user):
     user.stars = rates_repository.avg_stars(user.id)
     user.received_rates = rates_repository.received_rates(user.id)
+    return user
+
+
+def enrich(rates_repository, user):
+    user = enrich_common(rates_repository, user)
+    user.mutual_friends = mutual_friends()
     return user
 
 
@@ -177,7 +187,7 @@ class UserEnricher(Publisher):
 
 def enrich_private(rates_repository, drive_requests_repository,
                    perks_repository, payments_repository, user):
-    user = enrich(rates_repository, user)
+    user = enrich_common(rates_repository, user)
     user.rides_driver = drive_requests_repository.rides_driver(user.id)
     user.rides_passenger = drive_requests_repository.rides_passenger(user.id)
     user.distance_driver = drive_requests_repository.distance_driver(user.id)
@@ -217,3 +227,45 @@ class UsersACSUserIdExtractor(Publisher):
     def perform(self, users):
         self.publish('acs_user_ids_extracted',
                      filter(None, [u.acs_id for u in users]))
+
+
+MutualFriend = namedtuple('MutualFriend', 'name avatar')
+
+
+def mutual_friends():
+    import random
+    users = [
+        MutualFriend('David H.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/c18.0.200.200/p200x200/10624986_1477350769217645_465727595051312050_n.jpg?oh=ab5078065ccd474c2dd6ef054092753a&oe=555A5B55&__gda__=1435179072_1829d38f3ba4962e808d6cf461a29cd7'),
+        MutualFriend('Sandra S.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c60.0.200.200/p200x200/10419476_1411591069121334_820946196806376594_n.jpg?oh=1bc977aa955d52a980e3a9f6fc587d7d&oe=553897E9&__gda__=1429922601_e3e22d6bb6334d47ffed67bf9489ef5c'),
+        MutualFriend('Giovanni B.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c13.0.200.200/p200x200/10380893_10154576263220436_7890624139659593470_n.jpg?oh=e4af87eacd56b1f8e3e6b9df4d50190e&oe=55777D39&__gda__=1438548252_b3d58731b3dd88bc8839e1516f3506c2'),
+        MutualFriend('Tommaso F.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfp1/v/t1.0-1/p200x200/10622955_1447363295547164_4638427295998374982_n.jpg?oh=47ddb776733de2a64766afbc1f89e815&oe=554A8DD6&__gda__=1435626944_e613637c8f7fb01562442af283b0a822'),
+        MutualFriend('Matteo L.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xap1/v/t1.0-1/p200x200/10868127_10204374991667470_3572364612501862863_n.jpg?oh=03ebcdb664870b133c394de37f386bcb&oe=557F3545&__gda__=1435448976_68d834c718dd9a6c8ffd748b8878ae51'),
+        MutualFriend('Serena P.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/p200x200/10456246_1468843330057838_7142733258662762811_n.jpg?oh=7f3d7664a8e0ddd8d6b962f12f225c4f&oe=55B735FF&__gda__=1437895988_c97db30e9e7ea0226e85f4c445056508'),
+        MutualFriend('Davide M.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfp1/v/t1.0-1/p200x200/10552479_1473248416290481_3001336802249778574_n.jpg?oh=f4998c49cbb1cb59103d3c6a635cdfd3&oe=552AF855&__gda__=1425913923_541e369920e5f956848122376d39ee6c'),
+        MutualFriend('Paola B.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c0.56.200.200/p200x200/10170698_10202420088615054_8979964403504391043_n.jpg?oh=d27867fb0f0a941bdd08f73ac11b3736&oe=553BAE73&__gda__=1425896022_7375e21ffb92020e97d28c16a92e316b'),
+        MutualFriend('Mercedes L.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash2/v/t1.0-1/c33.0.200.200/p200x200/580483_10201087598369262_1745409923_n.jpg?oh=9cdab6f2de3e9328bf90f742e27cb8a5&oe=553492F9&__gda__=1426058946_09c0f70d759f7bfc3becf5ff4ac4aee7'),
+        MutualFriend('Vittoria C.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/p200x200/10653468_298134990371275_4908610022188667937_n.jpg?oh=e5762040b057d735900c0f9fcb8ac931&oe=554D65CB&__gda__=1432502573_1fb83adfa633fab6925a63455c955191'),
+        MutualFriend('Stefania B.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/c0.0.200.200/p200x200/10671216_383300195159736_5370918852172017002_n.jpg?oh=34858d6cad91617dbf108ef04c30b831&oe=55395846&__gda__=1428905733_8972aa461f99a2b36c9ef1d80d0c90ac'),
+        MutualFriend('Tom S.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c33.0.200.200/p200x200/10256998_1404979933111128_6454708213465189421_n.jpg?oh=b07ec672e0d7645b7fd0b37f9496121d&oe=558D2255&__gda__=1435459587_a56bccc6f5cc3776d33b3a93ebdfc2d6'),
+        MutualFriend('Laura C.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/c33.0.200.200/p200x200/1926809_1474787226134281_3779165220712858598_n.jpg?oh=65399fb70a2fe94f089779c439dc6e50&oe=552A10CE&__gda__=1430584539_5919c3b4949fbd88a8b0c87d30ea5082'),
+        MutualFriend('Margerita M.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfp1/v/t1.0-1/p200x200/10478178_1375484966087429_4446006849314134874_n.jpg?oh=e055ae455030056465162eaf5b114a1a&oe=557CFEB1&__gda__=1437643943_b02e085de20e7cca66eb21df48edc14d'),
+        MutualFriend('Francesco B.',
+                     'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/c0.0.200.200/p200x200/10660268_364398580387247_2251372498450011203_n.jpg?oh=9dea94ae4b9eebc030297bd4831400d1&oe=557F1376&__gda__=1434716574_68125d726e401bcf0855a998320f2e35'),
+    ]
+    number_friends = [0, 0, 0, 0, 0, 1, 1, 3, 3, 8, 8]
+    return [mf for mf in random.sample(users,
+                                       random.sample(number_friends, 1)[0])]
