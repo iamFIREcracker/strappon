@@ -148,6 +148,10 @@ class DriveRequest(Base, ReprMixin):
     driver = relationship('Driver', uselist=False, cascade='expunge')
     passenger = relationship('Passenger', uselist=False, cascade='expunge')
 
+    @property
+    def created_day(self):
+        return self.created.date()
+
 
 class Rate(Base, ReprMixin):
     __tablename__ = 'rate'
@@ -304,6 +308,9 @@ class Feedback(Base, ReprMixin):
 
     user = relationship('User', uselist=False)
 
+    @property
+    def created_day(self):
+        return self.created.date()
 
 class PromoCode(Base, ReprMixin):
     __tablename__ = 'promo_code'
