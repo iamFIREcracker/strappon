@@ -74,19 +74,22 @@ class TokenSerializer(Publisher):
 
 
 class UserCreator(Publisher):
-    def perform(self, repository, acs_id, facebook_id,
+    def perform(self, repository, acs_id, facebook_id, facebook_token,
                 first_name, last_name, name, avatar_unresolved, avatar, email,
                 locale):
-        user = repository.add(acs_id, facebook_id, first_name, last_name, name,
+        user = repository.add(acs_id, facebook_id, facebook_token,
+                              first_name, last_name, name,
                               avatar_unresolved, avatar, email, locale)
         self.publish('user_created', user)
 
 
 class UserUpdater(Publisher):
-    def perform(self, user, acs_id, facebook_id, first_name, last_name, name,
+    def perform(self, user, acs_id, facebook_id, facebook_token,
+                first_name, last_name, name,
                 avatar_unresolved, avatar, email, locale):
         user.acs_id = acs_id
         user.facebook_id = facebook_id
+        user.facebook_token = facebook_token
         user.first_name = first_name
         user.last_name = last_name
         user.name = name
