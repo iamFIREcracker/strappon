@@ -183,6 +183,17 @@ class MultipleDriveRequestsDeactivator(Publisher):
         self.publish('drive_requests_hid', [deactivate(r) for r in requests])
 
 
+class MultipleDriveRequestsCancellor(Publisher):
+    def perform(self, requests):
+        def cancel(request):
+            request.active = False
+            request.cancelled = True
+            return request
+
+        self.publish('drive_requests_cancelled',
+                     [cancel(r) for r in requests])
+
+
 class AcceptedDriveRequestsFilter(Publisher):
     def perform(self, requests):
         """Filter out all the requests with 'accepted' equal to `False`.
