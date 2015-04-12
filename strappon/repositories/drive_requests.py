@@ -123,39 +123,39 @@ class DriveRequestsRepository(object):
 
     @staticmethod
     def rides_driver(user_id):
-        return Base.session.query(func.count()).\
-            select_from(DriveRequest).\
-            join('driver', 'user').\
-            filter(User.id == user_id).\
-            filter(DriveRequest.accepted == true()).\
-            first()[0]
+        return (Base.session.query(func.count()).
+                select_from(DriveRequest).
+                join('driver', 'user').
+                filter(User.id == user_id).
+                filter(DriveRequest.accepted == true()).
+                first()[0])
 
     @staticmethod
     def rides_passenger(user_id):
-        return Base.session.query(func.count()).\
-            select_from(DriveRequest).\
-            join('passenger', 'user').\
-            filter(User.id == user_id).\
-            filter(DriveRequest.accepted == true()).\
-            first()[0]
+        return (Base.session.query(func.count()).
+                select_from(DriveRequest).
+                join('passenger', 'user').
+                filter(User.id == user_id).
+                filter(DriveRequest.accepted == true()).
+                first()[0])
 
     @staticmethod
     def distance_driver(user_id):
-        return Base.session.query(func.coalesce(func.sum(Passenger.distance),
-                                                0.0)).\
-            select_from(DriveRequest).\
-            join('driver', 'user').\
-            join('passenger').\
-            filter(User.id == user_id).\
-            filter(DriveRequest.accepted == true()).\
-            first()[0]
+        return (Base.session.query(func.coalesce(func.sum(Passenger.distance),
+                                                 0.0)).
+                select_from(DriveRequest).
+                join('driver', 'user').
+                join('passenger').
+                filter(User.id == user_id).
+                filter(DriveRequest.accepted == true()).
+                first()[0])
 
     @staticmethod
     def distance_passenger(user_id):
-        return Base.session.query(func.coalesce(func.sum(Passenger.distance),
-                                                0.0)).\
-            select_from(DriveRequest).\
-            join('passenger', 'user').\
-            filter(User.id == user_id).\
-            filter(DriveRequest.accepted == true()).\
-            first()[0]
+        return (Base.session.query(func.coalesce(func.sum(Passenger.distance),
+                                                 0.0)).
+                select_from(DriveRequest).
+                join('passenger', 'user').
+                filter(User.id == user_id).
+                filter(DriveRequest.accepted == true()).
+                first()[0])
