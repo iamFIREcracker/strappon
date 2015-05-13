@@ -313,6 +313,7 @@ class Feedback(Base, ReprMixin):
     def created_day(self):
         return self.created.date()
 
+
 class PromoCode(Base, ReprMixin):
     __tablename__ = 'promo_code'
 
@@ -335,3 +336,16 @@ class UserPromoCode(Base, ReprMixin):
                      onupdate=datetime.utcnow)
     user_id = Column(String, ForeignKey('user.id'), nullable=False)
     promo_code_id = Column(String, ForeignKey('promo_code.id'), nullable=False)
+
+
+class UserPosition(Base, ReprMixin):
+    __tablename__ = 'user_position'
+
+    id = Column(String, default=uuid, primary_key=True)
+    created = Column(DateTime, default=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.utcnow,
+                     onupdate=datetime.utcnow)
+    user_id = Column(String, ForeignKey('user.id'), nullable=False)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    region = Column(String, nullable=False)
