@@ -3,8 +3,12 @@
 
 import uuid
 
+from sqlalchemy.sql.expression import true
+from sqlalchemy.sql.expression import false
+from strappon.models import Base
 from strappon.models import User
 from strappon.models import Driver
+from weblib.db import contains_eager
 from weblib.db import expunged
 from weblib.db import joinedload
 from weblib.db import joinedload_all
@@ -39,11 +43,7 @@ class DriversRepository(object):
 
     @staticmethod
     def get_all_unhidden():
-        return [expunged(d, Driver.session)
-                for d in Driver.query.options(joinedload('user')).\
-                                filter(User.deleted == False).\
-                                filter(Driver.hidden == False).\
-                                filter(Driver.active == True)]
+        return get_all_unhidden()
 
     @staticmethod
     def get_all_hidden():
@@ -68,7 +68,6 @@ class DriversRepository(object):
                         hidden=False, active=True)
         return driver
 
-
     @staticmethod
     def unhide(driver_id):
         driver = DriversRepository.get(driver_id)
@@ -77,3 +76,18 @@ class DriversRepository(object):
         else:
             driver.hidden = False
             return driver
+
+
+def _get_all_unhidden():
+    return (Base.session.query(Driver).
+            options(contains_eager('user')).
+            select_from(Driver).
+            join(User).
+            filter(User.deleted == false()).
+            filter(Driver.hidden == false()).
+            filter(Driver.active == true()))
+
+
+def get_all_unhidden():
+    return [expunged(d, Base.session)
+            for d in _get_all_unhidden()]
