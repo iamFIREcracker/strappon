@@ -60,7 +60,8 @@ class UsersRepository(object):
 def authorized_by(token_id):
     Token2 = aliased(Token)
     token = (Token.query.options(joinedload_all('user.active_driver'),
-                                 joinedload_all('user.active_passenger')).
+                                 joinedload_all('user.active_passenger'),
+                                 joinedload_all('user.position')).
              filter(Token.id == token_id).
              filter(~exists().where(
                  and_(Token2.user_id == Token.user_id,
