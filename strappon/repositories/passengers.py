@@ -60,6 +60,10 @@ class PassengersRepository(object):
         return get_all_unmatched()
 
     @staticmethod
+    def get_all_unmatched_by_region(region):
+        return get_all_unmatched_by_region(region)
+
+    @staticmethod
     def get_all_expired(expire_after):
         return get_all_expired(expire_after)
 
@@ -109,6 +113,24 @@ def _get_all_unmatched():
 def get_all_unmatched():
     return [expunged(p, Passenger.session)
             for p in _get_all_unmatched()]
+
+
+def _get_all_unmatched_by_region(region):
+    return (Base.session.query(Passenger).
+            options(contains_eager('user')).
+            select_from(Passenger).
+            join(User).
+            outerjoin(UserPosition).
+            filter(User.deleted == false()).
+            filter(Passenger.active == true()).
+            filter(Passenger.matched == false()).
+            filter(or_(UserPosition.region.is_(None),
+                       UserPosition.region == region)))
+
+
+def get_all_unmatched_by_region(region):
+    return [expunged(p, Passenger.session)
+            for p in _get_all_unmatched_by_region(region)]
 
 
 def _get_all_active():
