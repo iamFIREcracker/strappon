@@ -5,12 +5,15 @@ import uuid
 from datetime import datetime
 from datetime import timedelta
 
-from strappon.models import Passenger
-from strappon.models import User
 from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.expression import null
+from strappon.models import Base
+from strappon.models import Passenger
+from strappon.models import UserPosition
+from strappon.models import User
 from weblib.db import and_
+from weblib.db import contains_eager
 from weblib.db import or_
 from weblib.db import expunged
 from weblib.db import joinedload
@@ -54,11 +57,7 @@ class PassengersRepository(object):
 
     @staticmethod
     def get_all_unmatched():
-        return [expunged(p, Passenger.session)
-                for p in Passenger.query.options(joinedload('user')).\
-                        filter(User.deleted == False).\
-                        filter(Passenger.active == True).\
-                        filter(Passenger.matched == False)]
+        return get_all_unmatched()
 
     @staticmethod
     def get_all_expired(expire_after):
@@ -95,6 +94,21 @@ class PassengersRepository(object):
         else:
             passenger.active = False
             return passenger
+
+
+def _get_all_unmatched():
+    return (Base.session.query(Passenger).
+            options(contains_eager('user')).
+            select_from(Passenger).
+            join(User).
+            filter(User.deleted == false()).
+            filter(Passenger.active == true()).
+            filter(Passenger.matched == false()))
+
+
+def get_all_unmatched():
+    return [expunged(p, Passenger.session)
+            for p in _get_all_unmatched()]
 
 
 def _get_all_active():
