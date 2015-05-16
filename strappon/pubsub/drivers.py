@@ -14,6 +14,12 @@ class UnhiddenDriversGetter(Publisher):
         self.publish('unhidden_drivers_found', repository.get_all_unhidden())
 
 
+class UnhiddenDriversByRegionGetter(Publisher):
+    def perform(self, repository, region):
+        self.publish('unhidden_drivers_found',
+                     repository.get_all_unhidden_by_region(region))
+
+
 class HiddenDriversGetter(Publisher):
     def perform(self, repository):
         """Search for all the _hidden_ drivers.

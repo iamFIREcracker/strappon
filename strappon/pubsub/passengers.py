@@ -38,6 +38,12 @@ class UnmatchedPassengersGetter(Publisher):
         self.publish('passengers_found', repository.get_all_unmatched())
 
 
+class UnmatchedPassengersByRegionGetter(Publisher):
+    def perform(self, repository, region):
+        self.publish('passengers_found',
+                     repository.get_all_unmatched_by_region(region))
+
+
 class ExpiredPassengersGetter(Publisher):
     def perform(self, repository, expire_after):
         self.publish('passengers_found',
