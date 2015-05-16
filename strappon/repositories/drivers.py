@@ -7,11 +7,13 @@ from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.expression import false
 from strappon.models import Base
 from strappon.models import User
+from strappon.models import UserPosition
 from strappon.models import Driver
 from weblib.db import contains_eager
 from weblib.db import expunged
 from weblib.db import joinedload
 from weblib.db import joinedload_all
+from weblib.db import or_
 
 
 class DriversRepository(object):
@@ -44,6 +46,10 @@ class DriversRepository(object):
     @staticmethod
     def get_all_unhidden():
         return get_all_unhidden()
+
+    @staticmethod
+    def get_unhidden_by_region(region):
+        return get_all_unhidden_by_region(region)
 
     @staticmethod
     def get_all_hidden():
@@ -91,3 +97,21 @@ def _get_all_unhidden():
 def get_all_unhidden():
     return [expunged(d, Base.session)
             for d in _get_all_unhidden()]
+
+
+def _get_all_unhidden_by_region(region):
+    return (Base.session.query(Driver).
+            options(contains_eager('user')).
+            select_from(Driver, User).
+            join(User).
+            outerjoin(UserPosition).
+            filter(User.deleted == false()).
+            filter(Driver.hidden == false()).
+            filter(Driver.active == true()).
+            filter(or_(UserPosition.region.is_(None),
+                       UserPosition.region == region)))
+
+
+def get_all_unhidden_by_region(region):
+    return [expunged(d, Driver.session)
+            for d in _get_all_unhidden_by_region(region)]
