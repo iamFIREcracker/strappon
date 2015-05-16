@@ -52,6 +52,11 @@ class User(Base, ReprMixin):
                      "and_(User.id == Passenger.user_id,"
                      "Passenger.active == True)")
     traces = relationship('Trace', uselist=True, cascade='expunge')
+    position = relationship('UserPosition', uselist=False, cascade='expunge')
+
+    @property
+    def region(self):
+        return self.position.region if self.position is not None else None
 
     @property
     def created_day(self):
@@ -349,3 +354,5 @@ class UserPosition(Base, ReprMixin):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     region = Column(String, nullable=False)
+
+    user = relationship('User', uselist=False, cascade='expunge')
