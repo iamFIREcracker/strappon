@@ -50,29 +50,6 @@ class AccountRefresher(Publisher):
         self.publish('account_refreshed', account)
 
 
-class TokenRefresher(Publisher):
-    def perform(self, repository, userid):
-        """Refreshes the token associated with user identified by ``userid``.
-
-        When done, a 'token_refreshed' message will be published toghether
-        with the refreshed record.
-        """
-        token = repository.refresh_token(userid)
-        self.publish('token_refreshed', token)
-
-
-class TokenSerializer(Publisher):
-    def perform(self, token):
-        """Convert the given token into a serializable dictionary.
-
-        At the end of the operation the method will emit a
-        'token_serialized' message containing the serialized object (i.e.
-        token dictionary).
-        """
-        self.publish('token_serialized', dict(id=token.id,
-                                              user_id=token.user_id))
-
-
 class UserCreator(Publisher):
     def perform(self, repository, acs_id, facebook_id, facebook_token,
                 first_name, last_name, name, avatar_unresolved, avatar, email,
