@@ -17,6 +17,11 @@ class ClosestRegionGetter(Publisher):
             self.publish('region_not_found', latitude, longitude)
 
 
+class PositionsByUserIdGetter(Publisher):
+    def perform(self, repository, user_id):
+        self.publish('positions_found', repository.get_all_by_user_id(user_id))
+
+
 class PositionCreator(Publisher):
     def perform(self, positions_repository, user_id, region,
                 latitude, longitude):

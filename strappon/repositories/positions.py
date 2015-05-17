@@ -3,7 +3,9 @@
 
 import uuid
 
+from strappon.models import Base
 from strappon.models import UserPosition
+from weblib.db import expunged
 
 
 class PositionsRepository(object):
@@ -13,3 +15,17 @@ class PositionsRepository(object):
         position = UserPosition(id=id, user_id=user_id, region=region,
                                 latitude=latitude, longitude=longitude)
         return position
+
+    @staticmethod
+    def get_all_by_user_id(user_id):
+        return get_all_by_user_id(user_id)
+
+
+def _get_all_by_user_id(user_id):
+    return (Base.session.query(UserPosition).
+            filter(UserPosition.user_id == user_id))
+
+
+def get_all_by_user_id(user_id):
+    return [expunged(t, Base.session)
+            for t in _get_all_by_user_id(user_id)]
