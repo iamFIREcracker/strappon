@@ -42,8 +42,9 @@ class UsersRepository(object):
 
 
 def _get(user_id):
-    return (User.query.options(joinedload('active_driver'),
-                               joinedload('active_passenger')).
+    return (User.query.options(joinedload(User.active_driver),
+                               joinedload(User.active_passenger),
+                               joinedload(User.position)).
             filter(User.id == user_id).
             filter(User.deleted == false()))
 
