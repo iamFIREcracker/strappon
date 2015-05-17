@@ -82,12 +82,19 @@ def serialize(user):
         return None
     data = dict(id=user.id, name=user.name, avatar=user.avatar,
                 locale=user.locale)
-    if user.position is not None:
-        data.update(region=user.position.region)
     if hasattr(user, 'stars'):
         data.update(stars=user.stars)
     if hasattr(user, 'received_rates'):
         data.update(received_rates=user.received_rates)
+    return data
+
+
+def serialize_with_region(user):
+    if user is None:
+        return None
+    data = serialize(user)
+    if user.position is not None:
+        data.update(region=user.position.region)
     return data
 
 

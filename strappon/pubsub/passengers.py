@@ -156,6 +156,18 @@ class PassengerSerializer(Publisher):
         self.publish('passenger_serialized', _serialize(passenger))
 
 
+def _serialize_with_region(passenger):
+    from strappon.pubsub.users import serialize_with_region as serialize_user
+    d = serialize(passenger)
+    d.update(user=serialize_user(passenger.user))
+    return d
+
+
+class PassengerWithRegionSerializer(Publisher):
+    def perform(self, passenger):
+        self.publish('passenger_serialized', _serialize_with_region(passenger))
+
+
 class MultiplePassengersSerializer(Publisher):
     def perform(self, passengers):
         """Convert a list of passengers into serializable dictionaries.
