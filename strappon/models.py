@@ -51,7 +51,7 @@ class User(Base, ReprMixin):
                      primaryjoin=""
                      "and_(User.id == Passenger.user_id,"
                      "Passenger.active == True)")
-    token = relationship('Token', uselist=False, cascade='expunge')
+    token = relationship('Token', uselist=True, cascade='expunge')
     traces = relationship('Trace', uselist=True, cascade='expunge')
     position = relationship('UserPosition', uselist=False, cascade='expunge',
                             primaryjoin=""
