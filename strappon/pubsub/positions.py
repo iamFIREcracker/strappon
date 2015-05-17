@@ -22,6 +22,14 @@ class PositionsByUserIdGetter(Publisher):
         self.publish('positions_found', repository.get_all_by_user_id(user_id))
 
 
+class MultiplePositionsArchiver(Publisher):
+    def perform(self, positions):
+        def archive(p):
+            p.archived = True
+            return p
+        self.publish('positions_archived', [archive(p) for p in positions])
+
+
 class PositionCreator(Publisher):
     def perform(self, positions_repository, user_id, region,
                 latitude, longitude):

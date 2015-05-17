@@ -52,7 +52,10 @@ class User(Base, ReprMixin):
                      "and_(User.id == Passenger.user_id,"
                      "Passenger.active == True)")
     traces = relationship('Trace', uselist=True, cascade='expunge')
-    position = relationship('UserPosition', uselist=False, cascade='expunge')
+    position = relationship('UserPosition', uselist=False, cascade='expunge',
+                            primaryjoin=""
+                            "and_(User.id == UserPosition.user_id,"
+                            "UserPosition.archived == False)")
 
     @property
     def created_day(self):
@@ -343,6 +346,7 @@ class UserPosition(Base, ReprMixin):
     __tablename__ = 'user_position'
 
     id = Column(String, default=uuid, primary_key=True)
+    archived = Column(Boolean, default=False, nullable=False)
     created = Column(DateTime, default=datetime.utcnow)
     updated = Column(DateTime, default=datetime.utcnow,
                      onupdate=datetime.utcnow)

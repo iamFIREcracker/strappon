@@ -6,6 +6,7 @@ import uuid
 from strappon.models import Base
 from strappon.models import UserPosition
 from weblib.db import expunged
+from sqlalchemy.sql.expression import false
 
 
 class PositionsRepository(object):
@@ -23,7 +24,8 @@ class PositionsRepository(object):
 
 def _get_all_by_user_id(user_id):
     return (Base.session.query(UserPosition).
-            filter(UserPosition.user_id == user_id))
+            filter(UserPosition.user_id == user_id).
+            filter(UserPosition.archived == false()))
 
 
 def get_all_by_user_id(user_id):
