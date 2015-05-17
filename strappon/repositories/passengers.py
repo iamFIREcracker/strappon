@@ -30,12 +30,7 @@ class PassengersRepository(object):
 
     @staticmethod
     def get_active_by_id(id):
-        return expunged(Passenger.query.options(joinedload('user')).\
-                        filter(User.deleted == False).\
-                        filter(Passenger.id == id).\
-                        filter(Passenger.active == True).\
-                        first(),
-                        Passenger.session)
+        return get_active_by_id(id)
 
     @staticmethod
     def copy(other):
@@ -100,6 +95,20 @@ class PassengersRepository(object):
             return passenger
 
 
+def _get_active_by_id(id):
+    return (Base.session.query(Passenger).
+            options(contains_eager('user')).
+            select_from(Passenger).
+            join(User).
+            filter(User.deleted == false()).
+            filter(Passenger.id == id).
+            filter(Passenger.active == true()))
+
+
+def get_active_by_id(id):
+    return expunged(_get_active_by_id(id).first(), Base.session)
+
+
 def _get_all_unmatched():
     return (Base.session.query(Passenger).
             options(contains_eager('user')).
@@ -111,7 +120,7 @@ def _get_all_unmatched():
 
 
 def get_all_unmatched():
-    return [expunged(p, Passenger.session)
+    return [expunged(p, Base.session)
             for p in _get_all_unmatched()]
 
 
@@ -129,24 +138,30 @@ def _get_all_unmatched_by_region(region):
 
 
 def get_all_unmatched_by_region(region):
-    return [expunged(p, Passenger.session)
+    return [expunged(p, Base.session)
             for p in _get_all_unmatched_by_region(region)]
 
 
 def _get_all_active():
-    return (Passenger.query.options(joinedload('user')).
+    return (Base.session.query(Passenger).
+            options(contains_eager('user')).
+            select_from(Passenger).
+            join(User).
             filter(User.deleted == false()).
             filter(Passenger.active == true()))
 
 
 def get_all_active():
-    return [expunged(p, Passenger.session)
+    return [expunged(p, Base.session)
             for p in _get_all_active()]
 
 
 def _get_all_expired(expire_after):
     expire_date = datetime.utcnow() - timedelta(minutes=expire_after)
-    return (Passenger.query.options(joinedload('user')).
+    return (Base.session.query(Passenger).
+            options(contains_eager('user')).
+            select_from(Passenger).
+            join(User).
             filter(User.deleted == false()).
             filter(Passenger.active == true()).
             filter(Passenger.matched == false()).
@@ -157,5 +172,5 @@ def _get_all_expired(expire_after):
 
 
 def get_all_expired(expire_after):
-    return [expunged(p, Passenger.session)
+    return [expunged(p, Base.session)
             for p in _get_all_expired(expire_after)]
