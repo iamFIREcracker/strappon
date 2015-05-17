@@ -35,10 +35,6 @@ class UsersRepository(object):
         return user
 
     @staticmethod
-    def refresh_token(user_id):
-        return TokensRepository.add(user_id)
-
-    @staticmethod
     def authorized_by(token_id):
         return authorized_by(token_id)
 
