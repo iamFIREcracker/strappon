@@ -212,3 +212,11 @@ class UserRegionExtractor(Publisher):
             self.publish('region_not_found')
         else:
             self.publish('region_found', user.position.region)
+
+
+class SerializedUserRegionExtractor(Publisher):
+    def perform(self, user):
+        if not hasattr(user, 'region'):
+            self.publish('region_not_found')
+        else:
+            self.publish('region_found', user['region'])
