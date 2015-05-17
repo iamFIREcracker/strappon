@@ -3,26 +3,16 @@
 
 import uuid
 
+from strappon.models import Base
 from strappon.models import Token
 from strappon.models import User
-from strappon.repositories.tokens import TokensRepository
-from sqlalchemy.orm import aliased
-from weblib.db import and_
-from weblib.db import exists
+from sqlalchemy.sql.expression import false
 from weblib.db import expunged
+from weblib.db import contains_eager
 from weblib.db import joinedload
-from weblib.db import joinedload_all
 
 
 class UsersRepository(object):
-    @staticmethod
-    def get(id):
-        return expunged(User.query.options(joinedload('active_driver'),
-                                           joinedload('active_passenger')).\
-                        filter(User.deleted == False).\
-                        filter(User.id == id).first(),
-                        User.session)
-
     @staticmethod
     def add(acs_id, facebook_id, facebook_token, first_name, last_name, name,
             avatar_unresolved, avatar, email, locale):
@@ -35,34 +25,65 @@ class UsersRepository(object):
         return user
 
     @staticmethod
-    def authorized_by(token_id):
-        return authorized_by(token_id)
+    def get(user_id):
+        return get(user_id)
 
     @staticmethod
     def with_facebook_id(facebook_id):
-        return expunged(User.query.\
-                                filter(User.facebook_id == facebook_id).\
-                                filter(User.deleted == False).first(),
-                        User.session)
+        return with_facebook_id(facebook_id)
 
     @staticmethod
     def with_acs_id(acs_id):
-        return expunged(User.query.\
-                                filter(User.acs_id == acs_id).\
-                                filter(User.deleted == False).first(),
-                        User.session)
+        return with_acs_id(acs_id)
+
+    @staticmethod
+    def authorized_by(token_id):
+        return authorized_by(token_id)
+
+
+def _get(user_id):
+    return (User.query.options(joinedload('active_driver'),
+                               joinedload('active_passenger')).
+            filter(User.id == user_id).
+            filter(User.deleted == false()))
+
+
+def get(user_id):
+    return expunged(_get(user_id).first(), User.session)
+
+
+def _with_facebook_id(facebook_id):
+    return (User.query.
+            filter(User.facebook_id == facebook_id).
+            filter(User.deleted == false()))
+
+
+def with_facebook_id(facebook_id):
+    return expunged(_with_facebook_id(facebook_id).first(), User.session)
+
+
+def _with_acs_id(acs_id):
+    return (User.query.
+            filter(User.acs_id == acs_id).
+            filter(User.deleted == false()))
+
+
+def with_acs_id(acs_id):
+    return expunged(_with_acs_id(acs_id).first(), User.session)
+
+
+def _authorized_by(token_id):
+    return (Base.session.query(User).
+            options(contains_eager(User.active_driver),
+                    contains_eager(User.active_passenger),
+                    contains_eager(User.position)).
+            select_from(User).
+            outerjoin(User.active_driver).
+            outerjoin(User.active_passenger).
+            outerjoin(User.position).
+            join(User.token).
+            filter(Token.id == token_id))
 
 
 def authorized_by(token_id):
-    Token2 = aliased(Token)
-    token = (Token.query.options(joinedload_all('user.active_driver'),
-                                 joinedload_all('user.active_passenger'),
-                                 joinedload_all('user.position')).
-             filter(Token.id == token_id).
-             filter(~exists().where(
-                 and_(Token2.user_id == Token.user_id,
-                      Token2.created > Token.created))).
-             first())
-    if token is None or token.id != token_id:
-        return None
-    return expunged(token.user, Token.session)
+    return expunged(_authorized_by(token_id).first(), Base.session)
