@@ -52,13 +52,6 @@ class DriversRepository(object):
         return get_all_unhidden_by_region(region)
 
     @staticmethod
-    def get_all_hidden():
-        return [expunged(d, Driver.session)
-                for d in Driver.query.options(joinedload('user')).\
-                                filter(User.deleted == False).\
-                                filter(Driver.hidden == True)]
-
-    @staticmethod
     def with_user_id(user_id):
         return expunged(Driver.query.options(joinedload('user')).\
                                 filter(User.id == user_id).\
@@ -73,15 +66,6 @@ class DriversRepository(object):
                         license_plate=license_plate, telephone=telephone,
                         hidden=False, active=True)
         return driver
-
-    @staticmethod
-    def unhide(driver_id):
-        driver = DriversRepository.get(driver_id)
-        if driver is None:
-            return None
-        else:
-            driver.hidden = False
-            return driver
 
 
 def _get_all_unhidden():
