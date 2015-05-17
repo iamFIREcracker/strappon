@@ -55,10 +55,6 @@ class User(Base, ReprMixin):
     position = relationship('UserPosition', uselist=False, cascade='expunge')
 
     @property
-    def region(self):
-        return self.position.region if self.position is not None else None
-
-    @property
     def created_day(self):
         return self.created.date()
 

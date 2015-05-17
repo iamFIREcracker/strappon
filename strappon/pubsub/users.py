@@ -225,3 +225,11 @@ class UsersACSUserIdExtractor(Publisher):
     def perform(self, users):
         self.publish('acs_user_ids_extracted',
                      filter(None, [u.acs_id for u in users]))
+
+
+class UserRegionExtractor(Publisher):
+    def perform(self, user):
+        if user.position is None:
+            self.publish('region_not_found')
+        else:
+            self.publish('region_found', user.position.region)
