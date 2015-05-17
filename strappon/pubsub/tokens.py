@@ -9,8 +9,8 @@ class TokensByUserIdGetter(Publisher):
 
 
 class TokenCreator(Publisher):
-    def perform(self, repository, userid):
-        token = repository.create(userid)
+    def perform(self, repository, user_id):
+        token = repository.create(user_id)
         self.publish('token_created', token)
 
 
