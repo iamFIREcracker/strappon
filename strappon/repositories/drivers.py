@@ -44,10 +44,6 @@ class DriversRepository(object):
                         Driver.session)
 
     @staticmethod
-    def get_all_unhidden():
-        return get_all_unhidden()
-
-    @staticmethod
     def get_unhidden_by_region(region):
         return get_all_unhidden_by_region(region)
 
@@ -82,21 +78,6 @@ class DriversRepository(object):
         else:
             driver.hidden = False
             return driver
-
-
-def _get_all_unhidden():
-    return (Base.session.query(Driver).
-            options(contains_eager('user')).
-            select_from(Driver).
-            join(User).
-            filter(User.deleted == false()).
-            filter(Driver.hidden == false()).
-            filter(Driver.active == true()))
-
-
-def get_all_unhidden():
-    return [expunged(d, Base.session)
-            for d in _get_all_unhidden()]
 
 
 def _get_all_unhidden_by_region(region):

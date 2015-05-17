@@ -20,16 +20,6 @@ class UnhiddenDriversByRegionGetter(Publisher):
                      repository.get_all_unhidden_by_region(region))
 
 
-class HiddenDriversGetter(Publisher):
-    def perform(self, repository):
-        """Search for all the _hidden_ drivers.
-
-        The method will emit a 'hidden_drivers_found' message, followed by the
-        list of found drivers.
-        """
-        self.publish('hidden_drivers_found', repository.get_all_hidden())
-
-
 class MultipleDriversWithIdGetter(Publisher):
     def perform(self, repository, driver_ids):
         self.publish('drivers_found',
@@ -77,30 +67,6 @@ class DriverCreator(Publisher):
         driver = repository.add(user_id, car_make, car_model, car_color,
                                 license_plate, telephone)
         self.publish('driver_created', driver)
-
-
-class DriverHider(Publisher):
-    def perform(self, driver):
-        """Temporarily hides the given driver.
-
-        On success, a 'driver_hid' message is published with the updated driver
-        record.
-        """
-        driver.hidden = True
-        self.publish('driver_hid', driver)
-
-
-class MultipleDriversUnhider(Publisher):
-    def perform(self, drivers):
-        """Sets the 'hidden' property of the given list of drivers to ``False``.
-
-        On success, the 'drivers_unhid' message will be published toghether with
-        with the list of unhidden drivers.
-        """
-        def unhide(driver):
-            driver.hidden = False
-            return driver
-        self.publish('drivers_unhid', [unhide(d) for d in drivers])
 
 
 def serialize(driver):
