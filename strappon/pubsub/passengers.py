@@ -69,6 +69,15 @@ class ActivePassengerWithIdGetter(Publisher):
             self.publish('passenger_found', passenger)
 
 
+class MatchedPassengerWithIdGetter(Publisher):
+    def perform(self, repository, passenger_id):
+        passenger = repository.get_matched_by_id(passenger_id)
+        if passenger is None:
+            self.publish('passenger_not_found', passenger_id)
+        else:
+            self.publish('passenger_found', passenger)
+
+
 class PassengerCreator(Publisher):
     def perform(self, repository, user_id, origin, origin_latitude,
                 origin_longitude, destination, destination_latitude,

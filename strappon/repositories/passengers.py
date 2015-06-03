@@ -33,6 +33,10 @@ class PassengersRepository(object):
         return get_active_by_id(id)
 
     @staticmethod
+    def get_matched_by_id(id):
+        return get_matched_by_id(id)
+
+    @staticmethod
     def copy(other):
         passenger = \
             Passenger(id=other.id,
@@ -107,6 +111,15 @@ def _get_active_by_id(id):
 
 def get_active_by_id(id):
     return expunged(_get_active_by_id(id).first(), Base.session)
+
+
+def _get_matched_by_id(id):
+    return (_get_active_by_id(id).
+            filter(Passenger.matched == true()))
+
+
+def get_matched_by_id(id):
+    return expunged(_get_matched_by_id(id).first(), Base.session)
 
 
 def _get_all_unmatched():
