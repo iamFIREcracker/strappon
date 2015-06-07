@@ -9,6 +9,7 @@ from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.expression import null
 from strappon.models import Base
+from strappon.models import DriveRequest
 from strappon.models import Passenger
 from strappon.models import UserPosition
 from strappon.models import User
@@ -35,6 +36,10 @@ class PassengersRepository(object):
     @staticmethod
     def get_matched_by_id(id):
         return get_matched_by_id(id)
+
+    @staticmethod
+    def get_matched_with_requests_by_id(id):
+        return get_matched_with_requests_by_id(id)
 
     @staticmethod
     def copy(other):
@@ -99,9 +104,9 @@ class PassengersRepository(object):
             return passenger
 
 
-def _get_active_by_id(id):
+def _get_active_by_id(id, *options):
     return (Base.session.query(Passenger).
-            options(contains_eager('user')).
+            options(*options).
             select_from(Passenger).
             join(User).
             filter(User.deleted == false()).
@@ -110,16 +115,28 @@ def _get_active_by_id(id):
 
 
 def get_active_by_id(id):
-    return expunged(_get_active_by_id(id).first(), Base.session)
+    return expunged(_get_active_by_id(id, contains_eager('user')).first(),
+                    Base.session)
 
 
-def _get_matched_by_id(id):
-    return (_get_active_by_id(id).
+def _get_matched_by_id(id, *options):
+    return (_get_active_by_id(id, *options).
             filter(Passenger.matched == true()))
 
 
 def get_matched_by_id(id):
-    return expunged(_get_matched_by_id(id).first(), Base.session)
+    return expunged(_get_matched_by_id(id, contains_eager('user')).first(),
+                    Base.session)
+
+
+def get_matched_with_requests_by_id(id):
+    return expunged(
+        _get_matched_by_id(id,
+                           contains_eager('user'),
+                           contains_eager('drive_requests')).
+        join(DriveRequest).
+        first(),
+        Base.session)
 
 
 def _get_all_unmatched():
