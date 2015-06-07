@@ -36,7 +36,7 @@ class DriversRepository(object):
 
     @staticmethod
     def get_with_requests(driver_id):
-        return expunged(Driver.query.options(joinedload('user'),
+        return expunged(Driver.query.options(joinedload_all('user.position'),
                                              joinedload_all('drive_requests.driver.user'),
                                              joinedload_all('drive_requests.passenger.user')).\
                                 filter(Driver.id == driver_id).\

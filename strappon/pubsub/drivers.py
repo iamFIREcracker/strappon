@@ -40,6 +40,7 @@ class DriverWithIdGetter(Publisher):
         else:
             self.publish('driver_found', driver)
 
+
 class ActiveDriverWithIdGetter(Publisher):
     def perform(self, repository, driver_id):
         driver = repository.get_active_by_id(driver_id)
@@ -48,6 +49,7 @@ class ActiveDriverWithIdGetter(Publisher):
         else:
             self.publish('driver_found', driver)
 
+
 class DeepDriverWithIdGetter(Publisher):
     def perform(self, repository, driver_id):
         driver = repository.get_with_requests(driver_id)
@@ -55,6 +57,7 @@ class DeepDriverWithIdGetter(Publisher):
             self.publish('driver_not_found', driver_id)
         else:
             self.publish('driver_found', driver)
+
 
 class DriverCreator(Publisher):
     def perform(self, repository, user_id, car_make, car_model, car_color,
@@ -67,18 +70,6 @@ class DriverCreator(Publisher):
         driver = repository.add(user_id, car_make, car_model, car_color,
                                 license_plate, telephone)
         self.publish('driver_created', driver)
-
-
-def serialize(driver):
-    if driver is None:
-        return None
-    return dict(id=driver.id,
-                car_make=driver.car_make,
-                car_model=driver.car_model,
-                car_color=driver.car_color,
-                license_plate=driver.license_plate,
-                telephone=driver.telephone,
-                hidden=driver.hidden)
 
 
 class MultipleDriversDeactivator(Publisher):
@@ -133,17 +124,40 @@ class DriverWithoutDriveRequestForPassengerValidator(Publisher):
             self.publish('valid_driver', driver)
 
 
+def serialize(driver):
+    if driver is None:
+        return None
+    return dict(id=driver.id,
+                car_make=driver.car_make,
+                car_model=driver.car_model,
+                car_color=driver.car_color,
+                license_plate=driver.license_plate,
+                telephone=driver.telephone,
+                hidden=driver.hidden)
+
+
+def _serialize(driver):
+    from strappon.pubsub.users import serialize as serialize_user
+    d = serialize(driver)
+    d.update(user=serialize_user(driver.user))
+    return d
+
+
 class DriverSerializer(Publisher):
     def perform(self, driver):
-        """Convert the given driver into a serializable dictionary.
+        self.publish('driver_serialized', _serialize(driver))
 
-        At the end of the operation the method will emit a 'driver_serialized'
-        message containing the serialized object (i.e. driver dictionary).
-        """
-        from strappon.pubsub.users import serialize as serialize_user
-        d = serialize(driver)
-        d.update(user=serialize_user(driver.user))
-        self.publish('driver_serialized', d)
+
+def _serialize_with_latlon(driver):
+    from strappon.pubsub.users import serialize_with_latlon as serialize_user
+    d = serialize(driver)
+    d.update(user=serialize_user(driver.user))
+    return d
+
+
+class DriverWithLatLonSerializer(Publisher):
+    def perform(self, driver):
+        self.publish('driver_serialized', _serialize_with_latlon(driver))
 
 
 class DriversACSUserIdExtractor(Publisher):
@@ -159,6 +173,7 @@ class DriversACSUserIdExtractor(Publisher):
 
 def enrich(driver):
     return driver
+
 
 def _enrich(rates_repository, driver):
     from strappon.pubsub.users import enrich as enrich_user
