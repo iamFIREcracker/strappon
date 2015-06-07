@@ -98,6 +98,16 @@ def serialize_with_region(user):
     return data
 
 
+def serialize_with_latlon(user):
+    if user is None:
+        return None
+    data = serialize(user)
+    if user.position is not None:
+        data.update(latitude=user.position.latitude,
+                    longitude=user.position.longitude)
+    return data
+
+
 class UserSerializer(Publisher):
     def perform(self, user):
         self.publish('user_serialized', serialize(user))
