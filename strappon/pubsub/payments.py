@@ -107,3 +107,18 @@ class CreditsReserver(Publisher):
             self.publish('credits_not_found', credits)
         else:
             self.publish('payments_created', None)
+
+
+def serialize(payment):
+    if payment is None:
+        return None
+    data = dict(id=payment.id,
+                credits=payment.credits,
+                bonus_credits=payment.bonus_credits,
+                promo_code_id=payment.promo_code_id)
+    return data
+
+
+class PaymentSerializer(Publisher):
+    def perform(self, payment):
+        self.publish('payment_serializer', serialize(payment))
