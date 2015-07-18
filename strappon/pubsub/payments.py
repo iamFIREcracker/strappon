@@ -121,4 +121,4 @@ def serialize(payment):
 
 class PaymentSerializer(Publisher):
     def perform(self, payment):
-        self.publish('payment_serializer', serialize(payment))
+        self.publish('payment_serialized', serialize(payment))
