@@ -46,13 +46,13 @@ class EligibleDriverPerksActivator(Publisher):
 
 
 class DriverErlyBirdPerkEnricher(Publisher):
-    def perform(self, drivers_repository, perks):
+    def perform(self, drive_requests_repository, perks):
         self.publish('perks_enriched',
                      [EnrichedDriverEarlyBirdPerk(p,
-                                                  drivers_repository.
-                                                  rides_driver(p.user_id,
-                                                               p.created,
-                                                               p.valid_until))
+                                                  drive_requests_repository.
+                                                  rides_given(p.user_id,
+                                                              p.created,
+                                                              p.valid_until))
                       for p in perks])
 
 
